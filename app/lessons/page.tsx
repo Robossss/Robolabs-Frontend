@@ -1,5 +1,7 @@
-import LessonCard from "./LessonCard"
 import Image from "next/image"
+
+import LessonCard from "./LessonCard"
+import ImageCarousel from "./ImageCarousel"
 
 const Lessons
  = () => {
@@ -26,6 +28,7 @@ const Lessons
             </div>
         </div>
         </header>
+        <ImageCarousel/>
         <LessonCard />
     </main>
   )

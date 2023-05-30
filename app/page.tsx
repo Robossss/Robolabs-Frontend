@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 import Button from '@/components/Button'
 import { profiles } from './profiles'
@@ -9,16 +10,32 @@ import RecommendationCard from './RecommendationCard'
 
 export default function Home() {
   return (
-    <main className='text-white max-w-[1512px] m-auto'>
+    <main className='text-white m-auto'>
         <section className="h-screen max-h-[1300px] bg-[url('/hero.svg')] bg-cover flex flex-col justify-between">
-            <header className="  h-[100px] flex justify-between items-center">
+            <header className="text-gray-300  h-[100px] flex justify-between items-center">
 <Image src='/logo2.svg' alt="logo" width={200} height={20} />
             <nav className="w-72 max-w-[50%] mx-24">
                 <ul className='flex justify-between items-center'>
-                    <li>Home</li>
-                    <li>About</li>
-                    <li>Features</li>
-                    <li>Pricing</li>
+                        <Link href="#">
+                    <li className='hover:text-white cursor-pointer'>
+                     Home
+                     </li>
+                    </Link>
+                        <Link href="#">
+                    <li className='hover:text-white cursor-pointer'>
+                     About
+                     </li>
+                    </Link>
+                        <Link href="#">
+                    <li className='hover:text-white cursor-pointer'>
+                     Features
+                     </li>
+                    </Link>
+                        <Link href="#">
+                    <li className='hover:text-white cursor-pointer'>
+                     Pricing
+                     </li>
+                    </Link>
                 </ul>
                 </nav>
             </header>
@@ -28,7 +45,7 @@ export default function Home() {
  Learn, Create, Innovate with Us!</h1>
 <p className='my-6'>Unlock Your Potential in Robotics with Personalized Tutoring</p>
 <Button text="Get Started" destination="/login"/>
-<button className="rounded-md my-6 bg-[#2D95B2] py-4 px-10 text-2xl font-bold">Get Started</button>
+{/* <button className="rounded-md my-6 bg-[#2D95B2] py-4 px-10 text-2xl font-bold">Get Started</button> */}
             </div>
             <div className=""></div>
         </section>

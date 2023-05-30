@@ -7,7 +7,7 @@ import { signUpInputs } from "@/components/inputs"
 
 const SignUp = () => {
   return (
-    <main className="max-w-[1512px] mx-auto flex items-center justify-center h-[1041px] w-full bg-blend-overlay bg-black/80 bg-[url('/signup.svg')] bg-cover">
+    <main className=" flex items-center justify-center h-[1041px] w-full bg-blend-overlay bg-black/80 bg-[url('/signup.svg')] bg-cover">
         <section className="bg-[rgba(015,18,20,0.74)] py-14 px-20 flex flex-col items-center gap-4">
         <Image src="/logo1.svg" height={130} width={170} alt="logo" />
             <h1 className="text-2xl mb-7 text-white font-bold">Welcome to RoboLabs</h1>
