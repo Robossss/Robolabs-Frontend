@@ -13,7 +13,7 @@ const LessonCard = () => {
             <div className="h-1 bg-green-500 rounded-lg w-[20%]"></div>
         </div>
         </div>
-        <Button text="GO TO COURSE"/>
+        <Button>Go To Course</Button>
 
     </div>
   )

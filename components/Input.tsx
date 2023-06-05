@@ -1,15 +1,23 @@
-import Image from "next/image"
-export interface InputInterface {
-    img:string,
-    placeholder:string
-    }
-    
-    const Input = ({img,placeholder}:InputInterface) => {
-      return (
+import Image from "next/image";
+import React, { forwardRef } from "react";
+export interface InputInterface
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  img: string;
+  name: "firstname" | "lastname" | "username" | "password";
+  placeholder: string;
+}
+
+const Input = React.forwardRef<HTMLInputElement,InputInterface>((props, ref) => {
+  
+  return (
     <div className="bg-white px-2 h-14 w-96 gap-4 items-center rounded-lg flex ">
-                  <i><Image height={20} width={20} src={img} alt="" /></i>
-                <input type="text" placeholder={placeholder} className="text-black w-full focus:outline-none" />
-                </div>  )
-    }
-    
-    export default Input
+      <i>
+        <Image height={20} width={20} src={props.img} alt="icon" />
+      </i>
+      <input  type={props.name==='password'? "password":undefined} {...props} ref={ref} className="text-black w-full focus:outline-none" />
+    </div>
+  );
+});
+
+Input.displayName = "Input"
+export default Input
