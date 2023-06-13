@@ -1,9 +1,10 @@
 import Image from "next/image";
-import React, { forwardRef } from "react";
+import React from "react";
 export interface InputInterface
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+  // extends React.InputHTMLAttributes<HTMLInputElement> 
+  {
   img: string;
-  name: "firstname" | "lastname" | "username" | "password";
+  name: "firstname" | "lastname" | "username" | "password" |"confirmPassword";
   placeholder: string;
 }
 
@@ -14,7 +15,7 @@ const Input = React.forwardRef<HTMLInputElement,InputInterface>((props, ref) => 
       <i>
         <Image height={20} width={20} src={props.img} alt="icon" />
       </i>
-      <input  type={props.name==='password'? "password":undefined} {...props} ref={ref} className="text-black w-full focus:outline-none" />
+      <input  type={props.name==='password' || props.name==='confirmPassword' ? "password":undefined} {...props} ref={ref} className="text-black w-full focus:outline-none" />
     </div>
   );
 });

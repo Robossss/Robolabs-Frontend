@@ -8,24 +8,35 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { loginInputs } from "@/components/inputs";
-import { type } from "os";
-import { userInfoSchema } from "../userInfo";
+import { loginInfoSchema } from "../userInfo";
+import axios from "axios";
 
 type Inputs = {
-  username: string;
-  password: string;
+  username: string,
+  password: string,
 };
 
 const Login = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<Inputs>({
-    resolver:zodResolver(userInfoSchema)
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+    resolver: zodResolver(loginInfoSchema),
   });
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const submitData: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
+    // alert("success")
+    const baseUrl = "https://robolabs-final-project.onrender.com/api/v1/"
+    const url = baseUrl +"auth/login/"
+    axios.post(url,data).then(response=> {console.log(response)}).catch(error=>{console.log(error)})
+  };
 
   return (
     <main className=" flex items-center justify-center h-screen max-h-[982px] w-full bg-blend-overlay bg-black/80 bg-[url('/login.svg')] bg-cover">
@@ -35,20 +46,24 @@ const Login = () => {
           Welcome to RoboLabs
         </h1>
         <form
-          action=""
           className="flex flex-col items-center gap-4"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(submitData)}
         >
           {loginInputs.map((input, index) => {
             return (
-              <>
-            <Input key={index} {...input} {...register(input.name)} />
-            {errors[`${input.name}`]?.message && <div className="h-1 text-xs flex justify-center items-center">{errors[`${input.name}`]?.message}</div>}
-              </>
-            )
+              <div key={index}>
+                <Input {...input} {...register(input.name)} />
+                {errors[`${input.name}`]?.message && (
+                  <div className="h-2 text-red-600 text-xs flex justify-center items-start">
+                    {errors[`${input.name}`]?.message}
+                  </div>
+                )}
+              </div>
+            );
           })}
           <Button>Sign In</Button>
         </form>
+        {/* <pre>{JSON.stringify(watch(),null,2)}</pre> */}
         <Link href="/signup">
           <p className="text-white">
             Don&#39;t have an account ?{" "}
