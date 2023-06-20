@@ -21,12 +21,12 @@ export const loginInputs: LoginInterface[] = [
 export const signUpInputs: InputInterface[] = [
   {
     img: "/user.svg",
-    name: "firstname",
+    name: "firstName",
     placeholder: "Enter your First Name",
   },
   {
     img: "/user.svg",
-    name: "lastname",
+    name: "lastName",
     placeholder: "Enter your Last Name",
   },
   {

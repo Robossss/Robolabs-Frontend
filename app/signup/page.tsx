@@ -10,10 +10,11 @@ import Input from "@/components/Input";
 import { signUpInputs } from "@/components/inputs";
 import { userInfoSchema } from "../userInfo";
 import axios from "axios";
+import { baseUrl } from "@/constants";
 
 type Inputs = {
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   username: string;
   password: string;
   confirmPassword: string;
@@ -28,8 +29,8 @@ const SignUp = () => {
     formState: { errors, isSubmitting },
   } = useForm<Inputs>({
     defaultValues: {
-      firstname: "",
-      lastname: "",
+      firstName: "",
+      lastName: "",
       username: "",
       password: "",
       confirmPassword: "",
@@ -38,15 +39,20 @@ const SignUp = () => {
     resolver: zodResolver(userInfoSchema),
   });
 
-  const submitData: SubmitHandler<Inputs> = (data) => {
-    // event?.preventDefault()
-    console.log(data);
-    const {confirmPassword,...newData} = data
-
-    // alert("success")
-    const baseUrl = "https://robolabs-final-project.onrender.com/api/v1/"
-    const url = baseUrl +"auth/register/"
-    axios.post(url,newData).then(response=> {console.log(response)})
+  const submitData: SubmitHandler<Inputs> = async (data) => {
+    const url = baseUrl + "auth/register";
+    const { confirmPassword, ...newData } = data;
+    console.log(newData);
+    try {
+      const response = await axios.post(url, newData,{
+        headers: {
+          'Content-Type': 'application/json'
+        }
+        });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -79,18 +85,16 @@ const SignUp = () => {
               id="role"
               className="w-full text-black focus:outline-none"
             >
-              <option value="">
-                Select Role
-              </option>
+              <option value="">Select Role</option>
               <option value="admin">Admin</option>
               <option value="student">Student</option>
             </select>
           </div>
-              {errors.role?.message && (
-                  <div className="h-1 text-red-600 text-xs flex justify-center items-center">
-                    {errors.role?.message}
-                  </div>
-                )}
+          {errors.role?.message && (
+            <div className="h-1 text-red-600 text-xs flex justify-center items-center">
+              {errors.role?.message}
+            </div>
+          )}
           <Button>Join Robolabs</Button>
         </form>
         <pre>{JSON.stringify(watch(), null, 2)}</pre>

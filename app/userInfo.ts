@@ -14,8 +14,8 @@ export const loginInfoSchema = z.object({
 
 export const userInfoSchema = z
   .object({
-    firstname: z.string().min(2, { message: "First name is required" }).max(24, { message: "First name is too long" }),
-    lastname: z.string().min(2, { message: "Last name is required" }).max(24, { message: "Last name is too long" }),
+    firstName: z.string().min(2, { message: "First name is required" }).max(24, { message: "First name is too long" }),
+    lastName: z.string().min(2, { message: "Last name is required" }).max(24, { message: "Last name is too long" }),
     username: z.string().min(5, { message: "Username is too short" }).max(24, { message: "Username is too long" }),
     password: z.string().min(8,{message:"Password is too short"}).max(25, { message: "password is too long" }),
     confirmPassword: z.string().min(8,{message:"Password is too short"}).max(25, { message: "password is too long" }),

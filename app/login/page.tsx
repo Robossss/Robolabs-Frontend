@@ -10,10 +10,14 @@ import Input from "@/components/Input";
 import { loginInputs } from "@/components/inputs";
 import { loginInfoSchema } from "../userInfo";
 import axios from "axios";
+import { baseUrl } from "@/constants";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type Inputs = {
-  username: string,
-  password: string,
+  username: string;
+  password: string;
 };
 
 const Login = () => {
@@ -29,16 +33,52 @@ const Login = () => {
     },
     resolver: zodResolver(loginInfoSchema),
   });
+  const router = useRouter();
 
-  const submitData: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
-    // alert("success")
-    const baseUrl = "https://robolabs-final-project.onrender.com/api/v1/"
-    const url = baseUrl +"auth/login/"
-    axios.post(url,data).then(response=> {console.log(response)}).catch(error=>{console.log(error)})
+  const submitData: SubmitHandler<Inputs> = async (userData) => {
+    const url = baseUrl + "auth/login";
+    console.log(userData);
+    try {
+      const response = await axios.post(url, userData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = response.data;
+      const token = data.token;
+      if (!token) {
+        console.error("No token available");
+        return;
+      }
+      localStorage.clear();
+      localStorage.setItem("user-token", token);
+      toast.success('login successful',{
+        autoClose: 1500
+      })
+      setTimeout(() => {
+        router.push("/lessons");
+      }, 2000);
+      // return response
+    } catch (error: any) {
+      console.error(error.response.data.message);
+      toast.error(error.response.data.message);
+      // toast.error('🦄 Wow so easy!', {
+      //   position: "top-center",
+      //   autoClose: 5000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: "dark",
+      //   });
+      // setTimeout(() => {
+      //   router.refresh();
+      // }, 100);
+    }
   };
 
-  return (
+  return (<>
     <main className=" flex items-center justify-center h-screen max-h-[982px] w-full bg-blend-overlay bg-black/80 bg-[url('/login.svg')] bg-cover">
       <section className="bg-[rgba(015,18,20,0.74)] py-14 px-20 flex flex-col items-center gap-4">
         <Image src="/logo1.svg" height={130} width={170} alt="logo" />
@@ -61,6 +101,7 @@ const Login = () => {
               </div>
             );
           })}
+
           <Button>Sign In</Button>
         </form>
         {/* <pre>{JSON.stringify(watch(),null,2)}</pre> */}
@@ -72,6 +113,19 @@ const Login = () => {
         </Link>
       </section>
     </main>
+    <ToastContainer
+position="top-center"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="dark"
+/>
+  </>
   );
 };
 

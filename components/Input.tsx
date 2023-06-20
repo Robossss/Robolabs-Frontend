@@ -4,7 +4,7 @@ export interface InputInterface
   // extends React.InputHTMLAttributes<HTMLInputElement> 
   {
   img: string;
-  name: "firstname" | "lastname" | "username" | "password" |"confirmPassword";
+  name: "firstName" | "lastName" | "username" | "password" |"confirmPassword";
   placeholder: string;
 }
 
