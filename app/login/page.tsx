@@ -14,6 +14,7 @@ import { baseUrl } from "@/constants";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Loading from "../loading";
 
 type Inputs = {
   username: string;
@@ -24,8 +25,8 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: { errors, isSubmitting, isLoading },
   } = useForm<Inputs>({
     defaultValues: {
       username: "",
@@ -58,27 +59,17 @@ const Login = () => {
       setTimeout(() => {
         router.push("/lessons");
       }, 2000);
-      // return response
     } catch (error: any) {
       console.error(error.response.data.message);
       toast.error(error.response.data.message);
-      // toast.error('🦄 Wow so easy!', {
-      //   position: "top-center",
-      //   autoClose: 5000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      //   theme: "dark",
-      //   });
-      // setTimeout(() => {
-      //   router.refresh();
-      // }, 100);
+      reset()
     }
   };
 
   return (<>
+  {
+    isSubmitting ?<Loading/>
+    :
     <main className=" flex items-center justify-center h-screen max-h-[982px] w-full bg-blend-overlay bg-black/80 bg-[url('/login.svg')] bg-cover">
       <section className="bg-[rgba(015,18,20,0.74)] py-14 px-20 flex flex-col items-center gap-4">
         <Image src="/logo1.svg" height={130} width={170} alt="logo" />
@@ -102,7 +93,7 @@ const Login = () => {
             );
           })}
 
-          <Button>Sign In</Button>
+          <Button disabled={isLoading}>Sign In</Button>
         </form>
         {/* <pre>{JSON.stringify(watch(),null,2)}</pre> */}
         <Link href="/signup">
@@ -113,6 +104,7 @@ const Login = () => {
         </Link>
       </section>
     </main>
+  }
     <ToastContainer
 position="top-center"
 autoClose={5000}
