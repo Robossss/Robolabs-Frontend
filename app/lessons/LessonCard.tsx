@@ -1,7 +1,10 @@
 import Image from "next/image"
+import Link from "next/link"
 import Button from "@/components/Button"
+import { useRouter } from "next/navigation"
 
 const LessonCard = () => {
+  const router = useRouter()
   return (
     <div className='text-white hover:bg-gray-800 w-[90%] rounded-xl mx-auto p-8 flex-col md:flex-row flex items-center justify-between gap-8'>
         <Image src="/profile1.png" width={300} height={300} alt="lesson image" />
@@ -13,7 +16,7 @@ const LessonCard = () => {
             <div className="h-1 bg-green-500 rounded-lg w-[20%]"></div>
         </div>
         </div>
-        <Button>Go To Course</Button>
+        <Button onClick={()=> router.push("/lesson")}>Go To Course</Button>
 
     </div>
   )

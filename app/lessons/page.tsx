@@ -1,10 +1,27 @@
+"use client"
 import Image from "next/image"
-
 import LessonCard from "./LessonCard"
 import ImageCarousel from "./ImageCarousel"
+import { GetServerSideProps } from "next"
+import axios from "axios"
+import { baseUrl } from "@/constants"
+import { useEffect } from "react"
+import { toast } from "react-toastify"
 
-const Lessons
- = () => {
+const Lessons = () => {
+    const getModules = async (url:string,config:any) => {
+        try {
+            const response =await axios.get(url,config)
+            console.log(response)
+        }catch(error:any){
+            toast.error(error.response.data.message)
+        }
+    }
+    useEffect(()=>{
+        const url = baseUrl + "module"
+        const token = localStorage.getItem("user-token")
+        getModules(url,{headers: { Authorization: `Bearer ${token}` }})
+    })
   return (
     <main className="">
         <header className="bg-[#1E1E1E] p-5 flex justify-between items-center">
@@ -33,5 +50,6 @@ const Lessons
     </main>
   )
 }
+
 
 export default Lessons
