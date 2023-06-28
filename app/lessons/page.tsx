@@ -5,14 +5,16 @@ import ImageCarousel from "./ImageCarousel"
 import { GetServerSideProps } from "next"
 import axios from "axios"
 import { baseUrl } from "@/constants"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 
 const Lessons = () => {
+    const [data,setData] = useState([])
     const getModules = async (url:string,config:any) => {
         try {
             const response =await axios.get(url,config)
             console.log(response)
+            setData(response.data)
         }catch(error:any){
             toast.error(error.response.data.message)
         }
@@ -46,7 +48,7 @@ const Lessons = () => {
         </div>
         </header>
         <ImageCarousel/>
-        <LessonCard />
+        {data.map(module=> <LessonCard key={module.id} {...module}  />)}
     </main>
   )
 }
