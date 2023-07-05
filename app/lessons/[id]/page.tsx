@@ -1,29 +1,68 @@
 "use client"
+import { baseUrl } from "@/constants";
+import axios from "axios";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-const Lesson = () => {
-  const lessons = [
-    {
-      title: "lesson1",
-      sublessons: [
-        {
-          title: "sublesson1",
-          content:
-            "content 1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, repellat!",
-        },
-        {
-          title: "sublesson2",
-          content:
-            "content 2 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, repellat!",
-        },
-        {
-          title: "sublesson3",
-          content:
-            "content 3 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, repellat!",
-        },
-      ],
-    },
+// export async function generateStaticParams(params: { id: number } ) {
+  
+  
+  
+  
+  // }
+
+  const Lesson = ({ params }: { params: { id: number } }) => {
+
+    const startModule =async (url:string,payload:{level:string},config:any) => {
+      const start = await axios.post(url,payload,config)
+      console.log(start)
+      
+    }
+  useEffect(() =>  {
+    const startUrl = baseUrl +"progress/create"
+    const token = localStorage.getItem("user-token")
+    startModule(startUrl,{"level":`${params.id}`},{headers: { Authorization: `Bearer ${token}`, }})
+  
+  }, [])
+
+  // const [lessons,setLesson] = useState([])
+
+//   const getLesson = async (url:string,config:any) => {
+//     try {
+//         const response =await axios.get(url,config)
+//         console.log(response)
+//         setLesson(response.data)
+//     }catch(error:any){
+//         toast.error(error.response.data.message)
+//     }
+// }
+// useEffect(()=>{
+//     const url = baseUrl + `module/${params.id}`
+//     const token = localStorage.getItem("user-token")
+//     getLesson(url,{headers: { Authorization: `Bearer ${token}` }})
+// })
+  // const lessons = [
+  //   {
+  //     title: "lesson1",
+  //     sublessons: [
+  //       {
+  //         title: "sublesson1",
+  //         content:
+  //           "content 1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, repellat!",
+  //       },
+  //       {
+  //         title: "sublesson2",
+  //         content:
+  //           "content 2 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, repellat!",
+  //       },
+  //       {
+  //         title: "sublesson3",
+  //         content:
+  //           "content 3 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, repellat!",
+  //       },
+  //     ],
+  //   },
     //   {
     //     lesson1: {
     //     sublesson1: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
@@ -41,8 +80,9 @@ const Lesson = () => {
     //     sublesson3: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
     //   }
     // }
-  ];
-  const [activeLesson,setActiveLesson] = useState(lessons[0].sublessons[0].content)
+  // ];
+  // const [activeLesson,setActiveLesson] = useState(lessons[0].sublessons[0].content)
+
   return (
     <>
       <header className="bg-[#1E1E1E] p-5 flex justify-between items-center">
@@ -55,7 +95,7 @@ const Lesson = () => {
           </div>
         </div>
       </header>
-      <section className="flex">
+      {/* <section className="flex">
         <aside className="min-w-[200px] w-1/5 h-screen">
           {lessons.map((lesson, index) => (
             <details key={index}>
@@ -69,8 +109,9 @@ const Lesson = () => {
         <main className="bg-white text-black w-4/5 h-screen">
           {activeLesson}
         </main>
-      </section>
+      </section> */}
     </>
+    // <h1>hi</h1>
   );
 };
 

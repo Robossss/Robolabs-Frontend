@@ -8,23 +8,34 @@ import { baseUrl } from "@/constants"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 
+export type Module =  {
+    _id: number,
+    name: string,
+    __v: number
+  }
+
+
+
 const Lessons = () => {
-    const [data,setData] = useState([])
+    const [data,setData] = useState<Module[]>([])
     const getModules = async (url:string,config:any) => {
         try {
             const response =await axios.get(url,config)
-            console.log(response)
-            setData(response.data)
+            console.log(response.data[0])
+            setData(response.data[0].modules)
+            
         }catch(error:any){
             toast.error(error.response.data.message)
         }
     }
     useEffect(()=>{
         const url = baseUrl + "module"
+        
         const token = localStorage.getItem("user-token")
         getModules(url,{headers: { Authorization: `Bearer ${token}` }})
-    })
-  return (
+    },[])
+    console.log(data)
+    return (
     <main className="">
         <header className="bg-[#1E1E1E] p-5 flex justify-between items-center">
         <Image src='/logo2.svg' alt="logo" width={200} height={20} />
@@ -48,7 +59,7 @@ const Lessons = () => {
         </div>
         </header>
         <ImageCarousel/>
-        {data.map(module=> <LessonCard key={module.id} {...module}  />)}
+        {data && data.map(item=> <LessonCard key={item._id} {...item}  />)}
     </main>
   )
 }
