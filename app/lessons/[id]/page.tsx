@@ -5,28 +5,40 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-// export async function generateStaticParams(params: { id: number } ) {
-  
-  
-  
-  
-  // }
+
+type Lesson = {
+  _id: string,
+  subject: string,
+  title: string,
+  content: string,
+  module: string,
+  __v: number
+}
+
 
   const Lesson = ({ params }: { params: { id: number } }) => {
 
-    const startModule =async (url:string,payload:{level:string},config:any) => {
-      const start = await axios.post(url,payload,config)
-      console.log(start)
+    const getLessons =async (url:string,config:any) => {
+      try {
+
+        const start = await axios.get(url,config)
+        console.log(start)
+        setLessons(start.data)
+        console.log(lessons)
+      }catch(error:any) {
+        toast.error(error.response.data.message)
+        console.error(error.response.data.message)
+      }
       
     }
   useEffect(() =>  {
-    const startUrl = baseUrl +"progress/create"
+    const startUrl = baseUrl +`lesson/${params.id}`
     const token = localStorage.getItem("user-token")
-    startModule(startUrl,{"level":`${params.id}`},{headers: { Authorization: `Bearer ${token}`, }})
-  
+    getLessons(startUrl,{headers: { Authorization: `Bearer ${token}`, }})
+  console.log(lessons)
   }, [])
 
-  // const [lessons,setLesson] = useState([])
+  const [lessons,setLessons] = useState<Lesson[]>([])
 
 //   const getLesson = async (url:string,config:any) => {
 //     try {
@@ -81,7 +93,7 @@ import { toast } from "react-toastify";
     //   }
     // }
   // ];
-  // const [activeLesson,setActiveLesson] = useState(lessons[0].sublessons[0].content)
+  const [activeLesson,setActiveLesson] = useState("Loading")
 
   return (
     <>
@@ -95,21 +107,21 @@ import { toast } from "react-toastify";
           </div>
         </div>
       </header>
-      {/* <section className="flex">
+      <section className="flex">
         <aside className="min-w-[200px] w-1/5 h-screen">
+          <ul>
           {lessons.map((lesson, index) => (
-            <details key={index}>
-              <summary>{lesson.title}</summary>
-              <ul>
-                {lesson.sublessons.map((sublesson,i)=><li key={i} onClick={()=>setActiveLesson(sublesson.content)}>{sublesson.title}</li>)}
-              </ul>
-            </details>
-          ))}
+            // <details key={index}>
+              // <summary >{lesson.title}</summary>
+                <li className=" cursor-pointer" key={index} onClick={()=>setActiveLesson(lesson.content)}>{lesson.title}</li>
+                // </details>
+                ))}
+                </ul>
         </aside>
-        <main className="bg-white text-black w-4/5 h-screen">
+        <main className=" border-l-2 border-white text-white p-16 bg-black w-4/5 h-screen">
           {activeLesson}
         </main>
-      </section> */}
+      </section>
     </>
     // <h1>hi</h1>
   );

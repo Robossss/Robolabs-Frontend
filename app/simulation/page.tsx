@@ -2,6 +2,7 @@
 import React from 'react'
 import Image from "next/image"
 import Button from "@/components/Button";
+import CharacterControl from "../../simulation/index.jsx"
 
 const page = () => {
   return (
@@ -20,6 +21,8 @@ const page = () => {
         </div>
         </header>
         <aside className=' absolute top-0 left-0 h-screen w-[40px] bg-[#1E1E1E] flex flex-col items-center justify-center'>hi</aside>
+        <section className='w-full h-full' ><CharacterControl/></section>
+        <iframe src="/index.html" width="100%" height="100%"></iframe>
     </main>
   )
 }
