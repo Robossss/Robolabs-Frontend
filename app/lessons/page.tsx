@@ -7,6 +7,7 @@ import axios from "axios"
 import { baseUrl } from "@/constants"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import { Module } from "module"
 
 export type Module =  {
     _id: number,
@@ -17,12 +18,16 @@ export type Module =  {
 
 
 const Lessons = () => {
-    const [data,setData] = useState<Module[]>([])
+    const [data,setData] = useState<{progress:[],modules:Module[]}>()
+    const sections = ["featured", "In Progress", "Completed"]
+    const [activeSection,setActiveSection] = useState(sections[0])
+
+
     const getModules = async (url:string,config:any) => {
         try {
             const response =await axios.get(url,config)
             console.log(response.data[0])
-            setData(response.data[0].modules)
+            setData(response.data[0])
             
         }catch(error:any){
             toast.error(error.response.data.message)
@@ -35,6 +40,17 @@ const Lessons = () => {
         getModules(url,{headers: { Authorization: `Bearer ${token}` }})
     },[])
     console.log(data)
+    const username = localStorage.getItem("username")
+    const role = localStorage.getItem("role")
+
+let modules;
+if(activeSection==="featured") {
+    modules = data?.modules
+// }else if (activeSection==="in progress") {
+//     modules = data?.progress.filter(item=>item.progress === "in progress")
+}
+console.log(modules,"modules")
+
     return (
     <main className="">
         <header className="bg-[#1E1E1E] p-5 flex justify-between items-center">
@@ -52,14 +68,17 @@ const Lessons = () => {
             <div className="flex gap-4 border-l-2 border-[#2D95B2] px-4">
                 <Image src="/recommendation1.png" className="rounded-[50%]" alt="Profile" width={50} height={50}/>
                 <div className="flex flex-col">
-                    <h1 className="text-xl">Name</h1>
-                    <p className="text-sm">profile</p>
+                    <h1 className="text-xl capitalize">{username}</h1>
+                    <p className="text-sm">{role}</p>
                 </div>
             </div>
         </div>
         </header>
         <ImageCarousel/>
-        {data && data.map(item=> <LessonCard key={item._id} {...item}  />)}
+        <div className=" px-16 py-6 flex gap-16">
+            {sections.map((section,index)=><button onClick={()=>setActiveSection(section)} key={index} className={`${section===activeSection && "bg-gray-800"} bg-transparent hover:bg-gray-800 px-4 py-2 rounded-sm capitalize`}>{section}</button>)}
+        </div>
+        {modules && modules.map((item:Module) => <LessonCard key={item._id} {...item}  />)}
     </main>
   )
 }

@@ -53,6 +53,7 @@ const Login = () => {
       }
       localStorage.clear();
       localStorage.setItem("user-token", token);
+      localStorage.setItem("username", userData.username);
       toast.success('login successful',{
         autoClose: 1500
       })

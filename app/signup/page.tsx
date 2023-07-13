@@ -63,6 +63,8 @@ const SignUp = () => {
       }
       localStorage.clear();
       localStorage.setItem("user-token", token);
+      localStorage.setItem("username", newData.username);
+      localStorage.setItem("role", newData.role);
       toast.success("login successful", {
         autoClose: 1500,
       });
