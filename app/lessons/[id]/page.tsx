@@ -1,9 +1,12 @@
 "use client"
+import Button from "@/components/Button";
 import { baseUrl } from "@/constants";
 import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+
 
 
 type Lesson = {
@@ -17,6 +20,7 @@ type Lesson = {
 
 
   const Lesson = ({ params }: { params: { id: number } }) => {
+    const router = useRouter()
 
     const getLessons =async (url:string,config:any) => {
       try {
@@ -93,7 +97,7 @@ type Lesson = {
     //   }
     // }
   // ];
-  const [activeLesson,setActiveLesson] = useState("Loading")
+  const [activeLesson,setActiveLesson] = useState("Select a lesson to begin")
 
   return (
     <>
@@ -108,18 +112,30 @@ type Lesson = {
         </div>
       </header>
       <section className="flex">
-        <aside className="min-w-[200px] w-1/5 h-screen">
-          <ul>
+        <aside className="min-w-[200px] p-10 w-1/5 h-screen flex flex-col justify-between items-center">
+          <div className=""></div>
+          <ul className="flex flex-col gap-8">
           {lessons.map((lesson, index) => (
             // <details key={index}>
               // <summary >{lesson.title}</summary>
-                <li className=" cursor-pointer" key={index} onClick={()=>setActiveLesson(lesson.content)}>{lesson.title}</li>
+                <li className={`cursor-pointer ${lesson.content===activeLesson && "text-xl"}`} key={index} onClick={()=>setActiveLesson(lesson.content)}>{lesson.title}</li>
                 // </details>
                 ))}
                 </ul>
+        <Button onClick={()=>router.push("lessons")}>Go To Dashboard</Button>
         </aside>
-        <main className=" border-l-2 border-white text-white p-16 bg-black w-4/5 h-screen">
+        <main className="w-full  text-white p-16 bg-gray-900 h-screen grid grid-rows-5 ">
+          <section className="bg-[#091519] row-span-4 grid grid-cols-2 items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center overflow-hidden">
+
+<Image src="/lessonimage.svg" height={477} width={454} alt="lesson image"/>
+            </div>
           {activeLesson}
+          </section>
+        <div className="flex justify-between items-center">
+          <Button>Previous</Button>
+          <Button onClick={()=>setActiveLesson(lessons[lessons.findIndex(lesson=>lesson.content===activeLesson)+1].content)}>Next</Button>
+        </div>
         </main>
       </section>
     </>

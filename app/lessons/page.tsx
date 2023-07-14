@@ -19,14 +19,14 @@ export type Module =  {
 
 const Lessons = () => {
     const [data,setData] = useState<{progress:[],modules:Module[]}>()
-    const sections = ["featured", "In Progress", "Completed"]
+    const sections = ["featured", "in progress", "completed"]
     const [activeSection,setActiveSection] = useState(sections[0])
 
 
     const getModules = async (url:string,config:any) => {
         try {
             const response =await axios.get(url,config)
-            console.log(response.data[0])
+            // console.log(response.data[0])
             setData(response.data[0])
             
         }catch(error:any){
@@ -39,17 +39,18 @@ const Lessons = () => {
         const token = localStorage.getItem("user-token")
         getModules(url,{headers: { Authorization: `Bearer ${token}` }})
     },[])
-    console.log(data)
+    // console.log(data)
     const username = localStorage.getItem("username")
     const role = localStorage.getItem("role")
 
 let modules;
 if(activeSection==="featured") {
     modules = data?.modules
-// }else if (activeSection==="in progress") {
-//     modules = data?.progress.filter(item=>item.progress === "in progress")
+}else if (activeSection==="in progress") {
+    modules = data?.progress
+    console.log(data?.progress,modules,"hi")
 }
-console.log(modules,"modules")
+// console.log(modules,"modules")
 
     return (
     <main className="">
