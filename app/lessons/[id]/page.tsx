@@ -126,14 +126,14 @@ type Lesson = {
         </aside>
         <main className="w-full  text-white p-16 bg-gray-900 h-screen grid grid-rows-5 ">
           <section className="bg-[#091519] row-span-4 grid grid-cols-2 items-center justify-center">
-            <div className="w-full h-full flex items-center justify-center overflow-hidden">
+            <div className="w-full h-full flex items-center justify-between overflow-hidden">
 
 <Image src="/lessonimage.svg" height={477} width={454} alt="lesson image"/>
             </div>
           {activeLesson}
           </section>
         <div className="flex justify-between items-center">
-          <Button>Previous</Button>
+          <Button onClick={()=>setActiveLesson(lessons[lessons.findIndex(lesson=>lesson.content===activeLesson)-1].content)}>Previous</Button>
           <Button onClick={()=>setActiveLesson(lessons[lessons.findIndex(lesson=>lesson.content===activeLesson)+1].content)}>Next</Button>
         </div>
         </main>
