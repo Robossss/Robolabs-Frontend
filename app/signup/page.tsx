@@ -48,7 +48,6 @@ const SignUp = () => {
   const submitData: SubmitHandler<Inputs> = async (data) => {
     const url = baseUrl + "auth/register";
     const { confirmPassword, ...newData } = data;
-    console.log(newData);
     try {
       const response = await axios.post(url, newData, {
         headers: {
@@ -64,14 +63,13 @@ const SignUp = () => {
       localStorage.clear();
       localStorage.setItem("user-token", token);
       localStorage.setItem("username", newData.username);
-      localStorage.setItem("role", newData.role);
+      localStorage.setItem("user-role", newData.role);
       toast.success("login successful", {
         autoClose: 1500,
       });
       setTimeout(() => {
         router.push("/lessons");
       }, 2000);
-      console.log(response);
     } catch (error:any) {
       console.error(error);
       toast.error(error.response.data.message);

@@ -31,12 +31,9 @@ type Sublesson = {
       try {
 
         const start = await axios.get(url,config)
-        console.log(start)
         setBigLessons(start.data)
-        console.log(bigLessons)
       }catch(error:any) {
         toast.error(error.response.data.message)
-        console.error(error.response.data.message)
       }
       
     }
@@ -44,64 +41,9 @@ type Sublesson = {
     const startUrl = baseUrl +`lesson/${params.id}`
     const token = localStorage.getItem("user-token")
     getLessons(startUrl,{headers: { Authorization: `Bearer ${token}`, }})
-  console.log(bigLessons)
-  }, [])
+  }, [params.id])
 
   const [bigLessons,setBigLessons] = useState<Lesson[]>([])
-
-//   const getLesson = async (url:string,config:any) => {
-//     try {
-//         const response =await axios.get(url,config)
-//         console.log(response)
-//         setLesson(response.data)
-//     }catch(error:any){
-//         toast.error(error.response.data.message)
-//     }
-// }
-// useEffect(()=>{
-//     const url = baseUrl + `module/${params.id}`
-//     const token = localStorage.getItem("user-token")
-//     getLesson(url,{headers: { Authorization: `Bearer ${token}` }})
-// })
-  // const lessons = [
-  //   {
-  //     title: "lesson1",
-  //     sublessons: [
-  //       {
-  //         title: "sublesson1",
-  //         content:
-  //           "content 1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, repellat!",
-  //       },
-  //       {
-  //         title: "sublesson2",
-  //         content:
-  //           "content 2 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, repellat!",
-  //       },
-  //       {
-  //         title: "sublesson3",
-  //         content:
-  //           "content 3 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, repellat!",
-  //       },
-  //     ],
-  //   },
-    //   {
-    //     lesson1: {
-    //     sublesson1: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
-    //     sublesson2: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
-    //     sublesson3: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
-    //   },
-    //     lesson2: {
-    //     sublesson1: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
-    //     sublesson2: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
-    //     sublesson3: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
-    //   },
-    //     lesson3: {
-    //     sublesson1: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
-    //     sublesson2: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
-    //     sublesson3: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, atque?",
-    //   }
-    // }
-  // ];
   const [activeLesson,setActiveLesson] = useState("Select a lesson to begin")
 
   return (
@@ -122,7 +64,7 @@ type Sublesson = {
           <ul className="flex flex-col gap-8">
           {bigLessons.map((lesson, index) => (
             <details key={index}>
-              <summary >{lesson.subject}</summary>
+              <summary className="cursor-pointer">{lesson.subject}</summary>
               {
                 lesson.lessons.map(lesson=>
                   <li className={`cursor-pointer ${lesson.content===activeLesson && "text-xl"}`} key={index} onClick={()=>setActiveLesson(lesson.content)}>{lesson.title}</li>

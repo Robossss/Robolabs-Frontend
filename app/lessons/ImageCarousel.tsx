@@ -40,8 +40,8 @@ export default function ImageCarousel({username}:{username:string}) {
     <div className="App">
       <Carousel
         showArrows={true}
-        // autoPlay={true}
-        // infiniteLoop={true}
+        autoPlay={true}
+        infiniteLoop={true}
         selectedItem={currentIndex}
         onChange={handleChange}
         className="carousel-container"

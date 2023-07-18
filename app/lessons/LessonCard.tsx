@@ -15,11 +15,9 @@ const LessonCard = ({ ...module }) => {
       const body = {
         level: module._id,
       };
-      console.log(body, module);
       const start = await axios.post(url, body, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(start);
     } catch (error: any) {
       toast.error(error.response.data.message);
     }

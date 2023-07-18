@@ -25,7 +25,6 @@ const Lessons = () => {
   const getModules = async (url: string, config: any) => {
     try {
       const response = await axios.get(url, config);
-      // console.log(response.data[0])
       setData(response.data[0]);
     } catch (error: any) {
       toast.error(error.response.data.message);
@@ -37,9 +36,8 @@ const Lessons = () => {
     const token = localStorage.getItem("user-token");
     getModules(url, { headers: { Authorization: `Bearer ${token}` } });
    setUsername(localStorage.getItem("username") || "no user")
-    setRole(localStorage.getItem("role") || "role")
+    setRole(localStorage.getItem("user-role") || "student")
   }, []);
-  // console.log(data)
 
   const [username, setUsername] = useState("player 1");
   const [role, setRole] = useState("killer");
@@ -49,9 +47,7 @@ const Lessons = () => {
     modules = data?.modules;
   } else if (activeSection === "in progress") {
     modules = data?.progress;
-    console.log(data?.modules, modules, "hi");
   }
-  // console.log(modules,"modules")
 
   return (
     <main className="">
@@ -85,7 +81,7 @@ const Lessons = () => {
             />
             <div className="flex flex-col">
               <h1 className="text-xl capitalize">{username}</h1>
-              <p className="text-sm">{role}</p>
+              <p className="text-sm uppercase">{role}</p>
             </div>
           </div>
         </div>

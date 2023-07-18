@@ -38,7 +38,6 @@ const Login = () => {
 
   const submitData: SubmitHandler<Inputs> = async (userData) => {
     const url = baseUrl + "auth/login";
-    console.log(userData);
     try {
       const response = await axios.post(url, userData, {
         headers: {
@@ -96,7 +95,6 @@ const Login = () => {
 
           <Button disabled={isLoading}>Sign In</Button>
         </form>
-        {/* <pre>{JSON.stringify(watch(),null,2)}</pre> */}
         <Link href="/signup">
           <p className="text-white">
             Don&#39;t have an account ?{" "}

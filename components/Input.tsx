@@ -1,8 +1,6 @@
 import Image from "next/image";
 import React from "react";
-export interface InputInterface
-  // extends React.InputHTMLAttributes<HTMLInputElement> 
-  {
+export interface InputInterface {
   img: string;
   name: "firstName" | "lastName" | "username" | "password" |"confirmPassword";
   placeholder: string;
