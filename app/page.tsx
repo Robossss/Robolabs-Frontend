@@ -10,18 +10,18 @@ import RecommendationCard from "./RecommendationCard";
 export default function Home() {
   return (
     <main className="text-white m-auto">
-      <section className="h-screen max-h-[1300px] bg-[url('/hero.svg')] bg-cover flex flex-col justify-between">
+      <section id="home" className="h-screen max-h-[1300px] bg-[url('/hero.svg')] bg-cover flex flex-col justify-between">
         <header className="text-gray-300  h-[100px] flex justify-between items-center">
           <Image src="/logo2.svg" alt="logo" width={200} height={20} />
           <nav className="w-72 max-w-[50%] mx-24">
             <ul className="flex justify-between items-center">
-              <Link href="#">
+              <Link href="#home">
                 <li className="hover:text-white cursor-pointer">Home</li>
               </Link>
-              <Link href="#">
+              <Link href="#about">
                 <li className="hover:text-white cursor-pointer">About</li>
               </Link>
-              <Link href="#">
+              <Link href="#features">
                 <li className="hover:text-white cursor-pointer">Features</li>
               </Link>
               <Link href="#">
@@ -30,7 +30,7 @@ export default function Home() {
             </ul>
           </nav>
         </header>
-        <div className="text-center">
+        <div  className="text-center">
           <h1 className=" text-5xl ">
             Join the Robotics Revolution.
             <br />
@@ -46,7 +46,7 @@ export default function Home() {
         </div>
         <div className=""></div>
       </section>
-      <section className="bg-[#020B0E] h-full py-36 px-12">
+      <section id="features" className="bg-[#020B0E] h-full py-36 px-12">
         <h1 className="text-3xl font-bold ">RoboLabs For All Individuals</h1>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 my-16 gap-4">
           {profiles.map((profile, index) => (
@@ -54,7 +54,7 @@ export default function Home() {
           ))}
         </div>
       </section>
-      <section className="bg-black/90 bg-[url('/robotchalk.svg')] bg-blend-overlay bg-cover [&>*>h1]:text-3xl [&>*>h1]:mb-10 py-28 px-10 [&>*]:mb-52">
+      <section id="about" className="bg-black/90 bg-[url('/robotchalk.svg')] bg-blend-overlay bg-cover [&>*>h1]:text-3xl [&>*>h1]:mb-10 py-28 px-10 [&>*]:mb-52">
         <div className="flex flex-col items-center text-center ">
           <h1>Who are we ?</h1>
           <p className="w-1/2 min-w-[500px]">

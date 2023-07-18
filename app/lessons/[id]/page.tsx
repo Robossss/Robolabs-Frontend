@@ -12,10 +12,15 @@ import { useRouter } from "next/navigation";
 type Lesson = {
   _id: string,
   subject: string,
+  lessons:Sublesson[],
+  module: string,
+  __v:number
+  
+}
+type Sublesson = {
   title: string,
   content: string,
-  module: string,
-  __v: number
+  __id: number
 }
 
 
@@ -27,8 +32,8 @@ type Lesson = {
 
         const start = await axios.get(url,config)
         console.log(start)
-        setLessons(start.data)
-        console.log(lessons)
+        setBigLessons(start.data)
+        console.log(bigLessons)
       }catch(error:any) {
         toast.error(error.response.data.message)
         console.error(error.response.data.message)
@@ -39,10 +44,10 @@ type Lesson = {
     const startUrl = baseUrl +`lesson/${params.id}`
     const token = localStorage.getItem("user-token")
     getLessons(startUrl,{headers: { Authorization: `Bearer ${token}`, }})
-  console.log(lessons)
+  console.log(bigLessons)
   }, [])
 
-  const [lessons,setLessons] = useState<Lesson[]>([])
+  const [bigLessons,setBigLessons] = useState<Lesson[]>([])
 
 //   const getLesson = async (url:string,config:any) => {
 //     try {
@@ -111,20 +116,24 @@ type Lesson = {
           </div>
         </div>
       </header>
-      <section className="flex">
-        <aside className="min-w-[200px] p-10 w-1/5 h-screen flex flex-col justify-between items-center">
+      <section className="flex h-screen">
+        <aside className="min-w-[200px] p-10 w-1/5 h-full flex flex-col justify-between items-center">
           <div className=""></div>
           <ul className="flex flex-col gap-8">
-          {lessons.map((lesson, index) => (
-            // <details key={index}>
-              // <summary >{lesson.title}</summary>
-                <li className={`cursor-pointer ${lesson.content===activeLesson && "text-xl"}`} key={index} onClick={()=>setActiveLesson(lesson.content)}>{lesson.title}</li>
-                // </details>
+          {bigLessons.map((lesson, index) => (
+            <details key={index}>
+              <summary >{lesson.subject}</summary>
+              {
+                lesson.lessons.map(lesson=>
+                  <li className={`cursor-pointer ${lesson.content===activeLesson && "text-xl"}`} key={index} onClick={()=>setActiveLesson(lesson.content)}>{lesson.title}</li>
+                  )
+              }
+                </details>
                 ))}
                 </ul>
         <Button onClick={()=>router.push("lessons")}>Go To Dashboard</Button>
         </aside>
-        <main className="w-full  text-white p-16 bg-gray-900 h-screen grid grid-rows-5 ">
+        <main className="w-full  text-white p-16 bg-gray-900 h-full grid grid-rows-5 ">
           <section className="bg-[#091519] row-span-4 grid grid-cols-2 items-center justify-center">
             <div className="w-full h-full flex items-center justify-between overflow-hidden">
 
@@ -133,13 +142,14 @@ type Lesson = {
           {activeLesson}
           </section>
         <div className="flex justify-between items-center">
-          <Button onClick={()=>setActiveLesson(lessons[lessons.findIndex(lesson=>lesson.content===activeLesson)-1].content)}>Previous</Button>
-          <Button onClick={()=>setActiveLesson(lessons[lessons.findIndex(lesson=>lesson.content===activeLesson)+1].content)}>Next</Button>
+          <Button onClick={()=>setActiveLesson(bigLessons[0].lessons[bigLessons[0].lessons.findIndex(lesson=>lesson.content===activeLesson)-1].content)}>Previous</Button>
+          <Button onClick={()=>setActiveLesson(bigLessons[0].lessons[bigLessons[0].lessons.findIndex(lesson=>lesson.content===activeLesson)+1].content)}>Next</Button>
         </div>
         </main>
+        {/* <pre>{JSON.stringify(bigLessons,null,2)}</pre> */}
       </section>
     </>
-    // <h1>hi</h1>
+    
   );
 };
 
