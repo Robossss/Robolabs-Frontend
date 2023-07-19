@@ -24,10 +24,15 @@ const LessonCard = ({ ...module }) => {
   };
 
   const startCourse = () => {
-    if (!module.level) {
+    toast.info('Loading module')
+    if (module.level) {
+      router.push(`lessons/${module.level._id}`);
+    }else {
       createProgress();
+      router.push(`lessons/${module._id}`);
     }
-    router.push(`lessons/${module.level._id || module._id}`);
+    
+    
   };
   return (
     <div className="text-white hover:bg-gray-800 w-[90%] rounded-xl mx-auto p-8 flex-col md:flex-row flex items-center justify-between gap-8">
