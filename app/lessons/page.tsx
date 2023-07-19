@@ -50,7 +50,7 @@ const Lessons = () => {
   }
 
   return (
-    <main className="">
+    <main className="bg-black text-white min-h-screen">
       <header className="bg-[#1E1E1E] p-5 flex justify-between items-center">
         <Image className=" cursor-pointer" onClick={()=>router.push("/")} src="/logo2.svg" alt="logo" width={200} height={20} />
         <div
@@ -93,8 +93,8 @@ const Lessons = () => {
             onClick={() => setActiveSection(section)}
             key={index}
             className={`${
-              section === activeSection && "bg-gray-800"
-            } bg-transparent hover:bg-gray-800 px-4 py-2 rounded-sm capitalize`}
+              section === activeSection ? "bg-gray-800":"bg-transparent"
+            }  hover:bg-gray-800 px-4 py-2 rounded-sm capitalize`}
           >
             {section}
           </button>
