@@ -31,21 +31,17 @@ const SignUp = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    watch,
+    formState: { errors, isSubmitting,isLoading },
   } = useForm<Inputs>({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      username: "",
-      password: "",
-      confirmPassword: "",
-      role: "",
-    },
     resolver: zodResolver(userInfoSchema),
   });
   const router = useRouter()
 
   const submitData: SubmitHandler<Inputs> = async (data) => {
+    if(isSubmitting){
+      toast.info('Submitting Form')
+    }
     const url = baseUrl + "auth/register";
     const { confirmPassword, ...newData } = data;
     try {
@@ -64,25 +60,23 @@ const SignUp = () => {
       localStorage.setItem("user-token", token);
       localStorage.setItem("username", newData.username);
       localStorage.setItem("user-role", newData.role);
-      toast.success("login successful", {
-        autoClose: 1500,
-      });
+      toast.success("login successful");
       setTimeout(() => {
         router.push("/lessons");
       }, 2000);
-    } catch (error:any) {
-      console.error(error);
-      toast.error(error.response.data.message);
-      reset()
 
+    } catch (error:any) {
+      toast.error(error.response.data.message,{
+        autoClose:2000
+      });
     }
+    
   };
+
 
   return (
     <>
-      {isSubmitting ? (
-        <Loading />
-      ) : (
+          <ToastContainer theme="dark" />
         <main className=" flex items-center justify-center h-[1041px] w-full bg-blend-overlay bg-black/80 bg-[url('/signup.svg')] bg-cover">
           <section className="bg-[rgba(015,18,20,0.74)] py-14 px-20 flex flex-col items-center">
             <Image src="/logo1.svg" height={130} width={170} alt="logo" />
@@ -98,7 +92,7 @@ const SignUp = () => {
                   <div key={index}>
                     <Input {...input} {...register(input.name)} />
                     {errors[`${input.name}`]?.message && (
-                      <div className="h-2 text-red-600 text-xs flex justify-center items-start">
+                      <div className="h-fit p-0 m-0 text-red-600 text-xs flex justify-center text-center flex-wrap w-96 items-start">
                         {errors[`${input.name}`]?.message}
                       </div>
                     )}
@@ -133,7 +127,6 @@ const SignUp = () => {
             </Link>
           </section>
         </main>
-      )}
     </>
   );
 };
