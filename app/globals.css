@@ -42,3 +42,7 @@ body {
     transform: rotate(360deg);
   }
 }
+
+::-ms-reveal {
+  display: none;
+}
