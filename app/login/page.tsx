@@ -61,7 +61,10 @@ const Login = () => {
       }, 2000);
     } catch (error: any) {
       console.error(error.response.data.message);
-      toast.error(error.response.data.message);
+      toast.error(error.response.data.message,{
+        // theme:
+        position: toast.POSITION.TOP_CENTER
+      });
       reset()
     }
   };
@@ -85,7 +88,7 @@ const Login = () => {
               <div key={index}>
                 <Input {...input} {...register(input.name)} />
                 {errors[`${input.name}`]?.message && (
-                  <div className="h-2 text-red-600 text-xs flex justify-center items-start">
+                  <div className=" text-red-600 text-xs flex justify-center items-center text-center">
                     {errors[`${input.name}`]?.message}
                   </div>
                 )}
