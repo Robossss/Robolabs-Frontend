@@ -85,14 +85,7 @@ const Login = () => {
         >
           {loginInputs.map((input, index) => {
             return (
-              <div key={index}>
-                <Input {...input} {...register(input.name)} />
-                {errors[`${input.name}`]?.message && (
-                  <div className=" text-red-600 text-xs flex justify-center items-center text-center">
-                    {errors[`${input.name}`]?.message}
-                  </div>
-                )}
-              </div>
+              <Input key={index} {...input} error={errors[`${input.name}`]} {...register(input.name)} />
             );
           })}
 

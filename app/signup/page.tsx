@@ -89,14 +89,7 @@ const SignUp = () => {
             >
               {signUpInputs.map((input, index) => {
                 return (
-                  <div key={index}>
-                    <Input {...input} {...register(input.name)} />
-                    {errors[`${input.name}`]?.message && (
-                      <div className="h-fit p-0 m-0 text-red-600 text-xs flex justify-center text-center flex-wrap w-96 items-start">
-                        {errors[`${input.name}`]?.message}
-                      </div>
-                    )}
-                  </div>
+                    <Input key={index} {...input} error={errors[`${input.name}`]} {...register(input.name)} />
                 );
               })}
               <div className="bg-white px-2 h-14 w-96 rounded-lg flex items-center text-black">
