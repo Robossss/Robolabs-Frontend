@@ -43,7 +43,7 @@ type Sublesson = {
     const startUrl = baseUrl +`lesson/${params.id}`
     const token = localStorage.getItem("user-token")
     getLessons(startUrl,{headers: { Authorization: `Bearer ${token}`, }})
-  }, [])
+  }, [params.id])
 
   const [bigLessons,setBigLessons] = useState<Lesson[]>([])
   const [activeLesson,setActiveLesson] = useState<Sublesson>({title:"Loading Lessons",content:"This will only take a moment",_id:0})
