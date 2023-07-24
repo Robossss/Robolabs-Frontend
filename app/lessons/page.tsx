@@ -53,19 +53,6 @@ const Lessons = () => {
     <main className="bg-black text-white min-h-screen">
       <header className="bg-[#1E1E1E] p-5 flex justify-between items-center">
         <Image className=" cursor-pointer" onClick={()=>router.push("/")} src="/logo2.svg" alt="logo" width={200} height={20} />
-        <div
-          className="flex items-center  border-2
-         border-[#2D95B2] rounded-xl px-3 py-1"
-        >
-          <i>
-            <Image src="/searchicon.svg" height={20} width={20} alt="search" />
-          </i>
-          <input
-            type="search"
-            className="outline-none bg-transparent text-center"
-            placeholder="Search Courses"
-          />
-        </div>
         <div className="flex gap-4">
           <div className="flex gap-4">
             <Image src="/box.svg" alt="Coding Area" width={20} height={20} />

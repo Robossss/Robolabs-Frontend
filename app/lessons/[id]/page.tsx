@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 
 
@@ -114,12 +115,15 @@ type Sublesson = {
         }
         </div>
         <div className="">
-          {bigLessons[0] && currentIndex!==bigLessons[0].lessons.length-1 && 
+          {(bigLessons[0] && currentIndex!==bigLessons[0].lessons.length-1) ? 
           <Button onClick={()=> {
             setCurrentIndex(currentIndex+1)
             setActiveLesson(bigLessons[0].lessons[currentIndex+1])}
           }
           >Next</Button>
+          :<Link href={"https://lesson1-robolabssimulation.vercel.app/"}>
+          <Button >Go To Simulation</Button>
+          </Link>
         }
         </div>
         </div>
