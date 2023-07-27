@@ -60,15 +60,13 @@ const SignUp = () => {
       localStorage.setItem("user-token", token);
       localStorage.setItem("username", newData.username);
       localStorage.setItem("user-role", newData.role);
-      toast.success("login successful");
+      toast.success("Account created successfully");
       setTimeout(() => {
         router.push("/lessons");
       }, 2000);
 
     } catch (error:any) {
-      toast.error(error.response.data.message,{
-        autoClose:2000
-      });
+      toast.error(error.response.data.message);
     }
     
   };
@@ -76,9 +74,16 @@ const SignUp = () => {
 
   return (
     <>
-          <ToastContainer theme="dark" />
-        <main className=" flex items-center justify-center h-[1041px] w-full bg-blend-overlay bg-black/80 bg-[url('/signup.svg')] bg-cover">
-          <section className="bg-[rgba(015,18,20,0.74)] py-14 px-20 flex flex-col items-center">
+          {/* <ToastContainer theme="dark" /> */}
+        <main className=" flex justify-center items-center h-screen bg-purple bg-[url('/flower.svg')] bg-contain bg-left-top bg-no-repeat ">
+          <div className="grid grid-cols-1 lg:grid-cols-2 h-full max-h-[1041px] w-full">
+
+          <div className="flex items-end h-4/5 min-h-[700px] overflow-visible w-full">
+            <Image className=" hidden lg:flex" src="/deepOrangeRobot.svg" width={836} height={856} alt=""/>
+            <Image className="hidden lg:flex -translate-x-1/2 w-1/2 self-end" src="/deepOrangeSmallRobot.svg" width={836} height={856} alt=""/>
+
+          </div>
+          <section className=" py-14 px-20 flex flex-col items-center">
             <Image src="/logo1.svg" height={130} width={170} alt="logo" />
             <h1 className="text-2xl mb-7 text-white font-bold my-2">
               Welcome to RoboLabs
@@ -109,7 +114,7 @@ const SignUp = () => {
                   {errors.role?.message}
                 </div>
               )}
-              <Button>Join Robolabs</Button>
+              <Button disabled={isLoading}>Join Robolabs</Button>
             </form>
 
             <Link href="/login">
@@ -119,7 +124,19 @@ const SignUp = () => {
               </p>
             </Link>
           </section>
+          </div>
         </main>
+         <ToastContainer
+position="top-center"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+/>
     </>
   );
 };

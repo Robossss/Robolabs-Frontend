@@ -24,37 +24,52 @@ const LessonCard = ({ ...module }) => {
   };
 
   const startCourse = () => {
-    toast.info('Loading module')
+    toast.info("Loading module");
     if (module.level) {
       router.push(`lessons/${module.level._id}`);
-    }else {
+    } else {
       createProgress();
       router.push(`lessons/${module._id}`);
     }
-    
-    
   };
   return (
-    <div className="text-white hover:bg-gray-800 w-[90%] rounded-xl mx-auto p-8 flex-col md:flex-row flex items-center justify-between gap-8">
-      <Image src="/profile1.png" width={300} height={300} alt="lesson image" />
-      <div className="flex flex-col justify-center gap-4 w-full">
-        <p className="text-[#2D95B2]">Introductory Lesson</p>
+    <div className="text-white h-[320px] bg-purple w-[90%] max-w-[1280px] rounded-[50px] shadow-x mx-auto p-8 grid grid-cols-2 gap-8">
+      {/* <Image src="/profile1.png" width={300} height={300} alt="lesson image" /> */}
+      <div className="flex flex-col justify-center gap-4 w-full h-full">
+        <h1 className="text-4xl font-extrabold">Introductory Lesson</h1>
         <h1 className="text-2xl text-white font-bold">
           {module.name || module.level.name}
         </h1>
         {module.progressType && (
           <>
             <p className="text-2xl font-bold">{module.progress}% completed</p>
-            <div className="h-1 bg-gray-500 rounded-lg">
-              {module.progress ? <div
-                  className={`h-1 bg-green-500 rounded-lg w-[${module.progress}%]`}
+            <div className="h-2 bg-white w-1/2 rounded-xl">
+              {module.progress ? (
+                <div
+                  className={`h-2 bg-[#D87F60] rounded-xl w-[${module.progress}%]`}
                 ></div>
-              :""}
+              ) : (
+                ""
+              )}
             </div>
           </>
         )}
+        <Button onClick={startCourse}>Go To Course</Button>
       </div>
-      <Button onClick={startCourse}>Go To Course</Button>
+      <div className="flex w-[600px] items-start justify-between relative">
+        {module.images.map((image: any,index:number) => (
+          <div key={image.id} className={`${index===0 ? "":""} h-[400*${index+1}] `}>
+            <Image
+              fill
+              src={image.avatar}
+              alt="module image"
+              style={{
+                objectFit: "scale-down",
+              }}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

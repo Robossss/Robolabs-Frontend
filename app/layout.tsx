@@ -19,13 +19,13 @@ export default function RootLayout({
     <html lang="en">
       <Suspense fallback={<Loading/>}/>
       <body className={inter.className}>
-        <main>
+        {/* <main> */}
 
         {children}
-        </main>
-        <footer className=' h-16 bg-gray-900 flex items-center justify-center'>
+        {/* </main> */}
+        {/* <footer className=' h-16 bg-gray-900 flex items-center justify-center'>
         2023 RoboLabs All rights reserved
-        </footer>
+        </footer> */}
         </body>
     </html>
   )

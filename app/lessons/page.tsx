@@ -50,8 +50,10 @@ const Lessons = () => {
   }
 
   return (
-    <main className="bg-black text-white min-h-screen">
-      <header className="bg-[#1E1E1E] p-5 flex justify-between items-center">
+    <main className="bg-white text-white min-h-screen ">
+      <section className="h-1/2 bg-purple bg-[url('/adinkra.svg')] bg-blend-overlay">
+
+      <header className=" p-5 flex justify-between items-center">
         <Image className=" cursor-pointer" onClick={()=>router.push("/")} src="/logo2.svg" alt="logo" width={200} height={20} />
         <div className="flex gap-4">
           <div className="flex gap-4">
@@ -73,22 +75,37 @@ const Lessons = () => {
           </div>
         </div>
       </header>
-      <ImageCarousel username={username}/>
-      <div className=" px-16 py-6 flex gap-16">
+      {/* <ImageCarousel username={username}/> */}
+      <div className="grid grid-cols-2">
+        <Image width={632} height={632} src="/lessonsRobot.svg" alt="lessons robot"/>
+        <div className="flex flex-col items-center">
+          <Image width={270} height={270} src="/personalRobot.svg" alt="personal robot"/>
+          <h1 className="text-5xl font-extrabold capitalize">Hello {username}</h1>
+          <p className="text-3xl font-semibold">Welcome to Your Dashboard</p>
+        </div>
+      </div>
+      </section>
+      <section className="py-10">
+
+      <div className=" px-16 py-6 mb-5 flex gap-16">
         {sections.map((section, index) => (
           <button
             onClick={() => setActiveSection(section)}
             key={index}
             className={`${
-              section === activeSection ? "bg-gray-800":"bg-transparent"
-            }  hover:bg-gray-800 px-4 py-2 rounded-sm capitalize`}
+              section === activeSection ? " bg-linear-orange  text-white  whitespace-nowrap":"bg-transparent text-black"
+            }  shadow-md capitalize rounded-3xl font-bold w-max py-4 px-10 transition-all hover:scale-110 hover:text-white hover:bg-linear-orange`}
           >
             {section}
           </button>
         ))}
       </div>
+      <div className="grid gap-16">
       {modules &&
         modules.map((item: Module) => <LessonCard key={item._id} {...item} />)}
+        </div>
+      </section>
+<pre className="text-black">{JSON.stringify(data,null,2)}</pre>
     </main>
   );
 };

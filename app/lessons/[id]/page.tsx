@@ -20,6 +20,7 @@ type Lesson = {
 }
 type Sublesson = {
   title: string,
+  avatar:string,
   content: string,
   _id: number
 }
@@ -28,15 +29,39 @@ type Sublesson = {
   const Lesson = ({ params }: { params: { id: number } }) => {
     const router = useRouter()
 
+    const updateProgress = async () => {
+      console.log(bigLessons.indexOf(activeBigLesson))
+      const progress = ((bigLessons.indexOf(activeBigLesson)+1)/bigLessons.length)*50
+      try {
+        const url = baseUrl + `progress/${params.id}`;
+        const body = {
+          progress:progress,
+          level: activeBigLesson.module,
+        };
+        const token = localStorage.getItem("user-token")
+        console.log(body)
+        const update = await axios.put(url, body, {headers: { Authorization: `Bearer ${token}`, }});
+        console.log(update)
+      } catch (error: any) {
+        toast.error(error.response.data.message);
+        console.log(error.response.data.message)
+        // updateProgress()
+      }
+    };
+  
+
     const getLessons =async (url:string,config:any) => {
       try {
         toast.info("Loading lesson")
         const start = await axios.get(url,config)
         console.log(start)
         setBigLessons(start.data)
-        setActiveLesson({title:"Lessons",content:"Select lesson to begin",_id:0})
+        setActiveBigLesson(bigLessons[0])
+        setActiveLesson({title:"Lessons",content:"Select lesson to begin",avatar:"/lessonimage.svg",_id:0})
+        
       }catch(error:any) {
         toast.error(error.response)
+        getLessons(url,config)
       }
       
     }
@@ -47,8 +72,13 @@ type Sublesson = {
   }, [params.id])
 
   const [bigLessons,setBigLessons] = useState<Lesson[]>([])
-  const [activeLesson,setActiveLesson] = useState<Sublesson>({title:"Loading Lessons",content:"This will only take a moment",_id:0})
+  const [activeBigLesson,setActiveBigLesson] = useState<any>()
+  const [activeLesson,setActiveLesson] = useState<Sublesson>({title:"Loading Lessons",avatar:"/lessonimage.svg",content:"This will only take a moment",_id:0})
   const [currentIndex,setCurrentIndex] = useState(0)
+
+  if(currentIndex+1===activeBigLesson?.lessons?.length){
+    updateProgress()
+  }
   // const changeSubLesson = (currentIndex:number,add:boolean)=> {
   //   if(add){
   //     setCurrentIndex(currentIndex+1)
@@ -58,8 +88,8 @@ type Sublesson = {
   //   setActiveLesson(bigLessons[0].lessons[currentIndex])
   // }
   return (
-    <>
-      <header className="bg-[#1E1E1E] p-5 flex justify-between items-center">
+    <main className=" bg-purple bg-[url('/adinkra.svg')] min-h-screen  bg-blend-overlay">
+      <header className=" p-5 flex justify-between items-center">
         <Image src="/logo2.svg" alt="logo" width={200} height={20} />
         <h1 className="text-3xl">Introduction to RoboLabs</h1>
         <div className="flex gap-4">
@@ -69,34 +99,38 @@ type Sublesson = {
           </div>
         </div>
       </header>
-      <section className="flex h-screen bg-black text-white">
-        <aside className="min-w-[200px] p-10 w-1/5 h-full flex flex-col justify-between items-center">
-          <div className=""></div>
-          <ul className="flex flex-col gap-8">
-          {bigLessons.map((lesson, index) => (
-            <details key={index}>
-              <summary className="cursor-pointer" >{lesson.subject}</summary>
-              {
-                lesson.lessons.map((lesson,index)=> {
-                  // setCurrentIndex(index)
-                  return (
+      <section className="flex h-full max-h-[800px] text-white">
+        <aside className="min-w-[200px] py-10 w-[30%] flex flex-col justify-between items-center">
+          <div className="flex flex-col items-end m-0">
 
-                    <li className={`cursor-pointer ${lesson===activeLesson && "text-xl"}`} key={index} onClick={()=>setActiveLesson(lesson)}>{lesson.title}</li>
-                  )
-      
-                })
-                }
-              
-                </details>
+          <Image src="/lessonsRobot.svg" height={300} width={300} alt="lessons Robot"/>
+          {/* <ul className="flex flex-col gap-8"> */}
+          {bigLessons.map((lesson, index) => (
+            // <details key={index} className="">
+            <h1 key={index} className={`${lesson===activeBigLesson && "text-purple bg-white rounded-l-xl"} py-4 px-8 -mr-4 cursor-pointer text-3xl font-bold `} onClick={()=>{setActiveBigLesson(lesson)
+              setCurrentIndex(0)
+            setActiveLesson(activeBigLesson.lessons[currentIndex])
+        }}
+          >{lesson.subject}</h1>
+            // {
+              //   lesson.lessons.map((lesson,index)=> {
+                //     // setCurrentIndex(index)
+              //     return (
+                //       <li className={`ml-4 cursor-pointer ${lesson===activeLesson && "bg-white text-purple rounded-md text-xl"}`} key={index} onClick={()=>setActiveLesson(lesson)}>{lesson.title}</li>
+                //     )
+                //   })s
+                //   }
+                
+                //   </details>
                 ))}
-                </ul>
+                {/* </ul> */}
+                </div>
         <Button onClick={()=>router.push("lessons")}>Go To Dashboard</Button>
         </aside>
-        <main className="w-full  text-white p-16 bg-gray-900 h-full grid grid-rows-5 ">
-          <section className="bg-[#091519] row-span-4 pr-8 grid gap-4 grid-cols-2 items-center justify-center">
-            <div className="w-full h-full flex items-center justify-between overflow-hidden">
-
-<Image src="/lessonimage.svg" height={477} width={454} alt="lesson image"/>
+        <main className="w-full max-h-[800px] p-16 bg-white h-full grid grid-rows-5 ">
+          <section className="bg-[#662C91] text-white bg-[url('/lessonBgRobot.svg')] rounded-[90px] bg-no-repeat bg-right overflow-clip row-span-4 pr-8 grid gap-4 grid-cols-2 items-center justify-center">
+            <div className="w-full h-full ">
+<Image src={activeLesson?.avatar} height={477} width={454} alt="lesson image"/>
             </div>
             <div className="text-center">
 <h1 className="text-4xl">{activeLesson?.title}</h1>
@@ -109,28 +143,28 @@ type Sublesson = {
           {currentIndex!==0 && 
           <Button onClick={()=> {
             setCurrentIndex(currentIndex-1)
-            setActiveLesson(bigLessons[0].lessons[currentIndex-1])}
+            setActiveLesson(activeBigLesson.lessons[currentIndex-1])}
           }
           >Previous</Button>
         }
         </div>
         <div className="">
-          {(bigLessons[0] && currentIndex!==bigLessons[0].lessons.length-1) ? 
+          {(activeBigLesson && currentIndex!==activeBigLesson.lessons.length-1) ? 
           <Button onClick={()=> {
             setCurrentIndex(currentIndex+1)
-            setActiveLesson(bigLessons[0].lessons[currentIndex+1])}
+            setActiveLesson(activeBigLesson.lessons[currentIndex+1])}
           }
           >Next</Button>
-          :<Link href={"https://lesson1-robolabssimulation.vercel.app/"}>
+          :activeBigLesson &&<Link href={"https://lesson1-robolabssimulation.vercel.app/"}>
           <Button >Go To Simulation</Button>
           </Link>
         }
         </div>
         </div>
         </main>
-        {/* <pre>{JSON.stringify(bigLessons,null,2)}</pre> */}
+        <pre>{JSON.stringify(activeBigLesson,null,2)}</pre>
       </section>
-    </>
+    </main>
     
   );
 };
