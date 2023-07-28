@@ -58,14 +58,14 @@ const LessonCard = ({ ...module }) => {
       </div>
       <div className="flex w-[600px] items-start justify-between relative">
         {module.images.map((image: any,index:number) => (
-          <div key={image.id} className={`${index===0 ? "":""} h-[400*${index+1}] `}>
+          <div key={image.id} className={`${index===0 ? "":""}  `}>
             <Image
               fill
               src={image.avatar}
               alt="module image"
-              style={{
-                objectFit: "scale-down",
-              }}
+              // style={{
+              //   objectFit: "scale-down",
+              // }}
             />
           </div>
         ))}

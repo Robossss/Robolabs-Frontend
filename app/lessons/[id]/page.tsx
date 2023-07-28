@@ -57,11 +57,13 @@ type Sublesson = {
         console.log(start)
         setBigLessons(start.data)
         setActiveBigLesson(bigLessons[0])
-        setActiveLesson({title:"Lessons",content:"Select lesson to begin",avatar:"/lessonimage.svg",_id:0})
+        // setActiveLesson({title:"Lessons",content:"Select lesson to begin",avatar:"/lessonimage.svg",_id:0})
         
       }catch(error:any) {
         toast.error(error.response)
-        getLessons(url,config)
+        setTimeout(
+          ()=>getLessons(url,config),1000
+        )
       }
       
     }
@@ -73,12 +75,36 @@ type Sublesson = {
 
   const [bigLessons,setBigLessons] = useState<Lesson[]>([])
   const [activeBigLesson,setActiveBigLesson] = useState<any>()
-  const [activeLesson,setActiveLesson] = useState<Sublesson>({title:"Loading Lessons",avatar:"/lessonimage.svg",content:"This will only take a moment",_id:0})
   const [currentIndex,setCurrentIndex] = useState(0)
 
   if(currentIndex+1===activeBigLesson?.lessons?.length){
     updateProgress()
   }
+
+
+  function getNextLesson() {
+    setCurrentIndex(currentIndex-1)
+    // if (!activeBigLesson?.lesson) {
+    //   return
+    // }
+    // const sublessonCount = activeBigLesson.lesson.length
+    // const currentLessonIndex = activeBigLesson.lesson.indexOf(activeLesson)
+    // if (currentLessonIndex < sublessonCount) {
+      // setNextLesson(activeBigLesson.lessons[currentLessonIndex+1])
+    // }  
+  }
+
+  function getPreviousLesson() {
+    setCurrentIndex(currentIndex+1)
+    // if (!activeBigLesson?.lesson) {
+    //   return
+    // }
+    // const currentLessonIndex = activeBigLesson.lesson.indexOf(activeLesson)
+    // if (currentLessonIndex > 0) {
+    //   return activeBigLesson.lessons[currentLessonIndex - 1]
+    // }
+  }
+
   // const changeSubLesson = (currentIndex:number,add:boolean)=> {
   //   if(add){
   //     setCurrentIndex(currentIndex+1)
@@ -87,6 +113,7 @@ type Sublesson = {
   //   }
   //   setActiveLesson(bigLessons[0].lessons[currentIndex])
   // }
+  const activeLesson = activeBigLesson?.lessons[currentIndex]
   return (
     <main className=" bg-purple bg-[url('/adinkra.svg')] min-h-screen  bg-blend-overlay">
       <header className=" p-5 flex justify-between items-center">
@@ -109,7 +136,7 @@ type Sublesson = {
             // <details key={index} className="">
             <h1 key={index} className={`${lesson===activeBigLesson && "text-purple bg-white rounded-l-xl"} py-4 px-8 -mr-4 cursor-pointer text-3xl font-bold `} onClick={()=>{setActiveBigLesson(lesson)
               setCurrentIndex(0)
-            setActiveLesson(activeBigLesson.lessons[currentIndex])
+            // setActiveLesson(activeBigLesson.lessons[currentIndex])
         }}
           >{lesson.subject}</h1>
             // {
@@ -143,7 +170,8 @@ type Sublesson = {
           {currentIndex!==0 && 
           <Button onClick={()=> {
             setCurrentIndex(currentIndex-1)
-            setActiveLesson(activeBigLesson.lessons[currentIndex-1])}
+            // setActiveLesson(activeBigLesson.lessons[currentIndex-1])
+          }
           }
           >Previous</Button>
         }
@@ -152,7 +180,8 @@ type Sublesson = {
           {(activeBigLesson && currentIndex!==activeBigLesson.lessons.length-1) ? 
           <Button onClick={()=> {
             setCurrentIndex(currentIndex+1)
-            setActiveLesson(activeBigLesson.lessons[currentIndex+1])}
+            // setActiveLesson(activeBigLesson.lessons[currentIndex+1])
+          }
           }
           >Next</Button>
           :activeBigLesson &&<Link href={"https://lesson1-robolabssimulation.vercel.app/"}>
@@ -162,7 +191,7 @@ type Sublesson = {
         </div>
         </div>
         </main>
-        <pre>{JSON.stringify(activeBigLesson,null,2)}</pre>
+        {/* <pre>{JSON.stringify(activeBigLesson,null,2)}</pre> */}
       </section>
     </main>
     

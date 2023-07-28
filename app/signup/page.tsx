@@ -78,7 +78,7 @@ const SignUp = () => {
         <main className=" flex justify-center items-center h-screen bg-purple bg-[url('/flower.svg')] bg-contain bg-left-top bg-no-repeat ">
           <div className="grid grid-cols-1 lg:grid-cols-2 h-full max-h-[1041px] w-full">
 
-          <div className="flex items-end h-4/5 min-h-[700px] overflow-visible w-full">
+          <div className="flex items-end  min-h-[700px] overflow-visible w-full">
             <Image className=" hidden lg:flex" src="/deepOrangeRobot.svg" width={836} height={856} alt=""/>
             <Image className="hidden lg:flex -translate-x-1/2 w-1/2 self-end" src="/deepOrangeSmallRobot.svg" width={836} height={856} alt=""/>
 
