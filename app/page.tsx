@@ -6,39 +6,23 @@ import { profiles } from "./profiles";
 import ProfileCard from "./ProfileCard";
 import { recommendations } from "./recommendations";
 import RecommendationCard from "./RecommendationCard";
+import Header from "@/components/Header";
 
 export default function Home() {
   return (
     <main className="text-white m-auto">
       <section id="home" className=" max-h-[1440px] bg-purple bg-[url('/flower.svg')] bg-contain bg-right bg-no-repeat ">
-        <header className="text-gray-300  h-[100px] pl-8 flex justify-between items-center">
-          <Image src="/logo2.svg" alt="logo" width={200} height={20} />
-          <nav className="w-72 max-w-[50%] mx-24">
-            <ul className="flex justify-between items-center">
-              <Link href="#home">
-                <li className="hover:text-white cursor-pointer">Home</li>
-              </Link>
-              <Link href="#about">
-                <li className="hover:text-white cursor-pointer">About</li>
-              </Link>
-              <Link href="#features">
-                <li className="hover:text-white cursor-pointer">Features</li>
-              </Link>
-              <Link href="#">
-                <li className="hover:text-white cursor-pointer">Pricing</li>
-              </Link>
-            </ul>
-          </nav>
-        </header>
+        <Header/>
         <div className=" grid grid-cols-2 p-4">
 
         <div  className="text-center flex flex-col items-center justify-center mb-16">
-          <div className="flex -mt-16">
+          <Image width={780} height={400} src="/landingImages.svg" alt="landing page image"/>
+          {/* <div className="flex -mt-16">
             <Image src="/heroImage1.svg" width={235} height={212} alt="hero image"/>
             <Image src="/heroImage2.svg" width={207} height={386} alt="hero image"/>
             <Image src="/heroImage3.svg" width={385} height={377} alt="hero image"/>
-          </div>
-          <h1 className=" text-5xl font-extrabold">
+          </div> */}
+          <h1 className=" text-6xl font-extrabold">
             Join the Robotics Revolution.
             <br />
             Learn, Create, Innovate with Us!
@@ -57,8 +41,8 @@ export default function Home() {
         </div>
       </section>
       <section id="features" className="bg-lightPurple h-full py-36 px-12">
-        <h1 className="text-3xl font-bold text-center">RoboLabs For All Individuals</h1>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 my-16 gap-8 2xl:gap-32">
+        <h1 className="text-3xl font-bold text-center mb-24">RoboLabs For All Individuals</h1>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 max-w-[1000px] mx-auto my-16 gap-4">
           {profiles.map((profile, index) => (
             <ProfileCard key={index} {...profile} />
           ))}

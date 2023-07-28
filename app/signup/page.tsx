@@ -16,6 +16,7 @@ import Loading from "../loading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
+import Header from "@/components/Header";
 
 type Inputs = {
   firstName: string;
@@ -75,14 +76,13 @@ const SignUp = () => {
   return (
     <>
           {/* <ToastContainer theme="dark" /> */}
-        <main className=" flex justify-center items-center h-screen bg-purple bg-[url('/flower.svg')] bg-contain bg-left-top bg-no-repeat ">
-          <div className="grid grid-cols-1 lg:grid-cols-2 h-full max-h-[1041px] w-full">
+        <main className=" min-h-screen h-full bg-purple bg-[url('/flower.svg')] bg-contain bg-left-top bg-no-repeat ">
+          <Header/>
+          <section className="flex justify-center items-center h-full">
 
-          <div className="flex items-end  min-h-[700px] overflow-visible w-full">
-            <Image className=" hidden lg:flex" src="/deepOrangeRobot.svg" width={836} height={856} alt=""/>
-            <Image className="hidden lg:flex -translate-x-1/2 w-1/2 self-end" src="/deepOrangeSmallRobot.svg" width={836} height={856} alt=""/>
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-center h-full w-full">
 
-          </div>
+            <Image className="" src="/signupImage.svg" width={836} height={856} alt=""/>
           <section className=" py-14 px-20 flex flex-col items-center">
             <Image src="/logo1.svg" height={130} width={170} alt="logo" />
             <h1 className="text-2xl mb-7 text-white font-bold my-2">
@@ -97,12 +97,12 @@ const SignUp = () => {
                     <Input key={index} {...input} error={errors[`${input.name}`]} {...register(input.name)} />
                 );
               })}
-              <div className="bg-white px-2 h-14 w-96 rounded-lg flex items-center text-black">
+              <div className="bg-white px-2 h-14 w-96 rounded-3xl flex items-center text-black">
                 <select
                   {...register("role")}
                   name="role"
                   id="role"
-                  className="w-full text-black focus:outline-none"
+                  className="w-full  text-black focus:outline-none"
                 >
                   <option value="">Select Role</option>
                   <option value="admin">Admin</option>
@@ -125,6 +125,7 @@ const SignUp = () => {
             </Link>
           </section>
           </div>
+          </section>
         </main>
          <ToastContainer
 position="top-center"
