@@ -8,7 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = (props:ButtonProps) => {
     const {children,...rest} = props
   return (
-    <button {...rest}  className="rounded-md my-6 bg-[#2D95B2] py-4 px-10 text-white font-bold w-max whitespace-nowrap">
+    <button {...rest}  className=" shadow-md capitalize rounded-3xl my-69 bg-linear-orange py-4 px-10 text-white font-bold w-max whitespace-nowrap transition-all hover:scale-110 ">
         {children}
     </button>
   )

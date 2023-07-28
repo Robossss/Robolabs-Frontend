@@ -14,14 +14,14 @@ const Input = React.forwardRef<HTMLInputElement,InputInterface>((props, ref) => 
   return (
     <div className="">
 
-    <div className="bg-white px-2 h-14 w-96 gap-4 items-center rounded-lg flex ">
+    <div className=" bg-white px-4 h-14 w-96 gap-4 items-center rounded-3xl flex ">
       <i>
         <Image height={20} width={20} src={props.img} alt="icon" />
       </i>
       <input  type={show?'text':props.name==='password' || props.name==='confirmPassword' ? "password":show?'text':undefined} {...props} ref={ref} className="text-black w-full focus:outline-none" />
       {
         (props.name==='password' || props.name==='confirmPassword') &&
-      <i className="text-black" onClick={()=>setShow(!show)}>{show?<AiFillEyeInvisible/>:<AiFillEye/>}</i>
+      <i className="text-black cursor-pointer" onClick={()=>setShow(!show)}>{show?<AiFillEyeInvisible/>:<AiFillEye/>}</i>
       }
     </div>
     {props.error?.message && (

@@ -13,7 +13,7 @@ export const loginInfoSchema = z.object({
     .max(25, { message: "password is too long" })
     .regex(
       new RegExp(
-        /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}/
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@/$!%*?&])[A-Za-z\d@$!%*?&]{8,25}/
         ),
       {
         message:
@@ -42,7 +42,7 @@ export const userInfoSchema = z
       .max(25, { message: "password is too long" })
       .regex(
         new RegExp(
-          /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}/
+          /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@/$!%*?&])[A-Za-z\d@$!%*?&]{8,25}/
         ),
         {
           message:

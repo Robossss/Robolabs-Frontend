@@ -16,6 +16,7 @@ import Loading from "../loading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
+import Header from "@/components/Header";
 
 type Inputs = {
   firstName: string;
@@ -60,15 +61,13 @@ const SignUp = () => {
       localStorage.setItem("user-token", token);
       localStorage.setItem("username", newData.username);
       localStorage.setItem("user-role", newData.role);
-      toast.success("login successful");
+      toast.success("Account created successfully");
       setTimeout(() => {
         router.push("/lessons");
       }, 2000);
 
     } catch (error:any) {
-      toast.error(error.response.data.message,{
-        autoClose:2000
-      });
+      toast.error(error.response.data.message);
     }
     
   };
@@ -76,9 +75,15 @@ const SignUp = () => {
 
   return (
     <>
-          <ToastContainer theme="dark" />
-        <main className=" flex items-center justify-center h-[1041px] w-full bg-blend-overlay bg-black/80 bg-[url('/signup.svg')] bg-cover">
-          <section className="bg-[rgba(015,18,20,0.74)] py-14 px-20 flex flex-col items-center">
+          {/* <ToastContainer theme="dark" /> */}
+        <main className=" min-h-screen h-full bg-purple bg-[url('/flower.svg')] bg-contain bg-left-top bg-no-repeat ">
+          <Header/>
+          <section className="flex justify-center items-center h-full">
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-center h-full w-full">
+
+            <Image className="" src="/signupImage.svg" width={836} height={856} alt=""/>
+          <section className=" py-14 px-20 flex flex-col items-center">
             <Image src="/logo1.svg" height={130} width={170} alt="logo" />
             <h1 className="text-2xl mb-7 text-white font-bold my-2">
               Welcome to RoboLabs
@@ -92,12 +97,12 @@ const SignUp = () => {
                     <Input key={index} {...input} error={errors[`${input.name}`]} {...register(input.name)} />
                 );
               })}
-              <div className="bg-white px-2 h-14 w-96 rounded-lg flex items-center text-black">
+              <div className="bg-white px-2 h-14 w-96 rounded-3xl flex items-center text-black">
                 <select
                   {...register("role")}
                   name="role"
                   id="role"
-                  className="w-full text-black focus:outline-none"
+                  className="w-full  text-black focus:outline-none"
                 >
                   <option value="">Select Role</option>
                   <option value="admin">Admin</option>
@@ -109,7 +114,7 @@ const SignUp = () => {
                   {errors.role?.message}
                 </div>
               )}
-              <Button>Join Robolabs</Button>
+              <Button disabled={isLoading}>Join Robolabs</Button>
             </form>
 
             <Link href="/login">
@@ -119,7 +124,20 @@ const SignUp = () => {
               </p>
             </Link>
           </section>
+          </div>
+          </section>
         </main>
+         <ToastContainer
+position="top-center"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+/>
     </>
   );
 };

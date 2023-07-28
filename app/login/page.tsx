@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Loading from "../loading";
+import Header from "@/components/Header";
 
 type Inputs = {
   username: string;
@@ -37,6 +38,9 @@ const Login = () => {
   const router = useRouter();
 
   const submitData: SubmitHandler<Inputs> = async (userData) => {
+    if(isSubmitting){
+      toast.info('Submitting Form')
+    }
     const url = baseUrl + "auth/login";
     try {
       const response = await axios.post(url, userData, {
@@ -53,28 +57,26 @@ const Login = () => {
       localStorage.clear();
       localStorage.setItem("user-token", token);
       localStorage.setItem("username", userData.username);
-      toast.success('login successful',{
-        autoClose: 1500
-      })
+      toast.success('login successful')
       setTimeout(() => {
         router.push("/lessons");
       }, 2000);
     } catch (error: any) {
-      console.error(error.response.data.message);
-      toast.error(error.response.data.message,{
-        // theme:
-        position: toast.POSITION.TOP_CENTER
-      });
+      toast.error(error.response.data.message);
       reset()
     }
   };
 
   return (<>
-  {
-    isSubmitting ?<Loading/>
-    :
-    <main className=" flex items-center justify-center h-screen max-h-[982px] w-full bg-blend-overlay bg-black/80 bg-[url('/login.svg')] bg-cover">
-      <section className="bg-[rgba(015,18,20,0.74)] py-14 px-20 flex flex-col items-center gap-4">
+{/* <ToastContainer theme="dark" /> */}
+    <main className=" min-h-screen h-full bg-purple bg-[url('/loginFlower.svg')] bg-contain bg-left-top bg-no-repeat ">
+<Header/>
+<section className="flex justify-center items-center h-full">
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 items-center h-full  w-full">
+
+        <Image className="" src="/loginImage.svg" width={836} height={856} alt=""/>
+      <section className=" py-14 px-20 flex flex-col items-center justify-center gap-4">
         <Image src="/logo1.svg" height={130} width={170} alt="logo" />
         <h1 className="text-2xl mb-7 text-white font-bold">
           Welcome to RoboLabs
@@ -98,8 +100,9 @@ const Login = () => {
           </p>
         </Link>
       </section>
+      </div>
+</section>
     </main>
-  }
     <ToastContainer
 position="top-center"
 autoClose={5000}
@@ -110,7 +113,6 @@ rtl={false}
 pauseOnFocusLoss
 draggable
 pauseOnHover
-theme="dark"
 />
   </>
   );
