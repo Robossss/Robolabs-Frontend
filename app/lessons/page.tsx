@@ -6,9 +6,10 @@ import { GetServerSideProps } from "next";
 import axios from "axios";
 import { baseUrl } from "@/constants";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { Module } from "module";
 import { useRouter } from "next/navigation";
+import { boolean } from "zod";
 
 export type Module = {
   _id: number;
@@ -26,8 +27,17 @@ const Lessons = () => {
     try {
       const response = await axios.get(url, config);
       setData(response.data[0]);
+      toast.success("Modules loaded")
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      // console.log(error.response.data.message);
+      // if(error.response){
+        toast.error(error.response?.data.message || error.message);
+        console.log(error.response?.data.message || error.message);
+
+      // }else{
+      //   console.log(error)
+      //   toast("Something went wrong")
+      // }
     }
   };
   useEffect(() => {
@@ -46,11 +56,16 @@ const Lessons = () => {
   if (activeSection === "featured") {
     modules = data?.modules;
   } else if (activeSection === "in progress") {
-    modules = data?.progress;
+    modules = data?.progress
+  }else {
+    modules = data?.progress.filter(item=> item["progress"]===100)
+    //   modules = data?.progressType = "Completed"
   }
+  console.log(activeSection)
 
-  return (
+  return (<>
     <main className="bg-white text-white min-h-screen ">
+      
       <section className="h-1/2 bg-purple bg-[url('/adinkra.svg')] bg-blend-overlay">
 
       <header className=" p-5 flex justify-between items-center">
@@ -93,20 +108,32 @@ const Lessons = () => {
             onClick={() => setActiveSection(section)}
             key={index}
             className={`${
-              section === activeSection ? " bg-linear-orange  text-white  whitespace-nowrap":"bg-transparent text-black"
-            }  shadow-md capitalize rounded-3xl font-bold w-max py-4 px-10 transition-all hover:scale-110 hover:text-white hover:bg-linear-orange`}
+              section === activeSection ? " bg-[#E27902]  text-white  whitespace-nowrap":"bg-transparent text-black"
+            }   capitalize rounded-3xl font-bold w-[165px] h-[52px] transition-all hover:scale-110 hover:text-white hover:bg-[#E27902]`}
           >
             {section}
           </button>
         ))}
       </div>
       <div className="grid gap-16">
-      {modules &&
-        modules.map((item: Module) => <LessonCard key={item._id} {...item} />)}
+      {modules ?
+        modules.map((item) => <LessonCard key={item._id} {...item} />): <h1 className="text-black text-7xl text-center">No modules {activeSection}</h1>}
         </div>
       </section>
 <pre className="text-black">{JSON.stringify(data,null,2)}</pre>
     </main>
+    <ToastContainer
+position="top-center"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+/>
+    </>
   );
 };
 

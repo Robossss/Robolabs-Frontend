@@ -40,9 +40,9 @@ const SignUp = () => {
   const router = useRouter()
 
   const submitData: SubmitHandler<Inputs> = async (data) => {
-    if(isSubmitting){
-      toast.info('Submitting Form')
-    }
+    toast.info('Submitting Form',{
+      autoClose: false
+    })
     const url = baseUrl + "auth/register";
     const { confirmPassword, ...newData } = data;
     try {
@@ -61,6 +61,7 @@ const SignUp = () => {
       localStorage.setItem("user-token", token);
       localStorage.setItem("username", newData.username);
       localStorage.setItem("user-role", newData.role);
+      toast.dismiss()
       toast.success("Account created successfully");
       setTimeout(() => {
         router.push("/lessons");

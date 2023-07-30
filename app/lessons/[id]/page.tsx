@@ -143,7 +143,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
                   // setActiveLesson(activeBigLesson.lessons[currentIndex])
                 }}
               >
-                {lesson.subject}
+                1.{lesson.subject}
               </h1>
               // {
               //   lesson.lessons.map((lesson,index)=> {

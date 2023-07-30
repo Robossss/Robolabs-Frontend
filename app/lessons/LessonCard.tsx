@@ -6,14 +6,21 @@ import axios from "axios";
 import { baseUrl } from "@/constants";
 import { toast } from "react-toastify";
 
-const LessonCard = ({ ...module }) => {
-  const token = localStorage.getItem("user-token");
+const LessonCard = ({ ...data }) => {
+  let course: any
+  if(data.level) {
+    course = data.level
+  }else {
+    course = data
+  }
+  // localStorage
   const router = useRouter();
   const createProgress = async () => {
+    const token = localStorage.getItem("user-token");
     try {
       const url = baseUrl + "progress/create";
       const body = {
-        level: module._id,
+        level: course._id,
       };
       const start = await axios.post(url, body, {
         headers: { Authorization: `Bearer ${token}` },
@@ -24,12 +31,12 @@ const LessonCard = ({ ...module }) => {
   };
 
   const startCourse = () => {
-    toast.info("Loading module");
-    if (module.level) {
-      router.push(`lessons/${module.level._id}`);
+    toast.info("Loading course");
+    if (data.level) {
+      router.push(`lessons/${data.level._id}`);
     } else {
       createProgress();
-      router.push(`lessons/${module._id}`);
+      router.push(`lessons/${course._id}`);
     }
   };
   return (
@@ -38,15 +45,15 @@ const LessonCard = ({ ...module }) => {
       <div className="flex flex-col justify-center gap-4 w-full h-full">
         <h1 className="text-4xl font-extrabold">Introductory Lesson</h1>
         <h1 className="text-2xl text-white font-bold">
-          {module.name || module.level.name}
+          {course.name}
         </h1>
-        {module.progressType && (
+        {data.progressType && (
           <>
-            <p className="text-2xl font-bold">{module.progress}% completed</p>
+            <p className="text-2xl font-bold">{data.progress}% completed</p>
             <div className="h-2 bg-white w-1/2 rounded-xl">
-              {module.progress ? (
+              {course.progress ? (
                 <div
-                  className={`h-2 bg-[#D87F60] rounded-xl w-[${module.progress}%]`}
+                  className={`h-2 bg-[#D87F60] rounded-xl w-[${data.progress}%]`}
                 ></div>
               ) : (
                 ""
@@ -57,17 +64,18 @@ const LessonCard = ({ ...module }) => {
         <Button onClick={startCourse}>Go To Course</Button>
       </div>
       <div className="flex w-[600px] items-start justify-between relative">
-        {module.images.map((image: any,index:number) => (
+        {course.images?.map((image: any,index:number) => (
           <div key={image.id} className={`${index===0 ? "":""}  `}>
             <Image
+            
               fill
               src={image.avatar}
-              alt="module image"
-              // style={{
-              //   objectFit: "scale-down",
-              // }}
-            />
-          </div>
+              alt="course image"
+              style={{
+                  objectFit: "scale-down",
+                }}
+                />
+                </div>
         ))}
       </div>
     </div>

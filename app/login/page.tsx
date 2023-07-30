@@ -38,9 +38,9 @@ const Login = () => {
   const router = useRouter();
 
   const submitData: SubmitHandler<Inputs> = async (userData) => {
-    if(isSubmitting){
-      toast.info('Submitting Form')
-    }
+    toast.info('Submitting Form',{
+      autoClose: false
+    })
     const url = baseUrl + "auth/login";
     try {
       const response = await axios.post(url, userData, {
@@ -57,6 +57,7 @@ const Login = () => {
       localStorage.clear();
       localStorage.setItem("user-token", token);
       localStorage.setItem("username", userData.username);
+      toast.dismiss()
       toast.success('login successful')
       setTimeout(() => {
         router.push("/lessons");
