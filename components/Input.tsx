@@ -25,7 +25,7 @@ const Input = React.forwardRef<HTMLInputElement,InputInterface>((props, ref) => 
       }
     </div>
     {props.error?.message && (
-                      <div className="h-fit p-0 m-0 text-red-600 text-xs flex justify-center text-center flex-wrap w-96 items-start">
+                      <div className="h-fit p-0 m-0 text-white text-xs flex justify-center text-center flex-wrap w-96 items-start">
                         {props.error?.message}
                       </div>
                     )}

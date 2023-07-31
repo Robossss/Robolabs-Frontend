@@ -17,7 +17,7 @@ type Lesson = {
 };
 type Sublesson = {
   title: string;
-  avatar: string;
+  images: any[];
   content: string;
   _id: number;
 };
@@ -26,24 +26,25 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const router = useRouter();
 
   const updateProgress = async () => {
-    console.log(bigLessons.indexOf(activeBigLesson));
-    const progress =
-      ((bigLessons.indexOf(activeBigLesson) + 1) / bigLessons.length) * 50;
+    // console.log(bigLessons.indexOf(activeBigLesson));
+    const updateId = localStorage.getItem("progress-id")
+    const progress = ((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 50;
     try {
-      const url = baseUrl + `progress/${params.id}`;
+      const url = baseUrl + `progress/${updateId}`;
       const body = {
         progress: progress,
-        level: activeBigLesson.module,
+        level: activeBigLesson?.module,
       };
       const token = localStorage.getItem("user-token");
-      console.log(body);
+      // console.log(body);
       const update = await axios.put(url, body, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(update);
+      // console.log(update);
     } catch (error: any) {
       toast.error(error.response.data.message);
       console.log(error.response.data.message);
+
       // updateProgress()
     }
   };
@@ -52,10 +53,9 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     try {
       toast.info("Loading lesson");
       const start = await axios.get(url, config);
-      console.log(start);
+      // console.log(start);
       setBigLessons(start.data);
       setActiveBigLesson(bigLessons[0]);
-      // setActiveLesson({title:"Lessons",content:"Select lesson to begin",avatar:"/lessonimage.svg",_id:0})
     } catch (error: any) {
       toast.error(error.response);
       setTimeout(() => getLessons(url, config), 1000);
@@ -68,10 +68,10 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   }, [params.id]);
 
   const [bigLessons, setBigLessons] = useState<Lesson[]>([]);
-  const [activeBigLesson, setActiveBigLesson] = useState<any>();
+  const [activeBigLesson, setActiveBigLesson] = useState<Lesson>();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  if (currentIndex + 1 === activeBigLesson?.lessons?.length) {
+  if (activeBigLesson && (currentIndex + 1 === activeBigLesson?.lessons?.length)) {
     updateProgress();
   }
 
@@ -143,7 +143,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
                   // setActiveLesson(activeBigLesson.lessons[currentIndex])
                 }}
               >
-                1.{lesson.subject}
+                1.{index} {lesson.subject}
               </h1>
               // {
               //   lesson.lessons.map((lesson,index)=> {
@@ -162,17 +162,24 @@ const Lesson = ({ params }: { params: { id: number } }) => {
             Go To Dashboard
           </Button>
         </aside>
-        <main className="w-full max-h-[800px] p-16 bg-white h-full grid grid-rows-5 ">
-          <section className="relative bg-[#662C91] text-white bg-[url('/lessonBgRobot.svg')] rounded-[90px] bg-no-repeat bg-right overflow-clip row-span-4 pr-8 grid gap-4 grid-cols-2 items-center justify-center">
+        <main className="w-full max-h-[800px]  p-16 bg-white grid grid-rows-5 ">
+          <section className={`relative bg-[#662C91] h-full text-white bg-[url('/lessonBgRobot.svg')] rounded-[90px] bg-no-repeat bg-right overflow-clip row-span-4 pr-8 grid gap-4 grid-cols-2 items-center justify-center ${!activeLesson?.images[0].avatar && "grid-cols-1 bg-black bg-[url('/noimgbg.svg')]"}`}>
+            <div className="">
+            {activeLesson?.images[0].avatar &&
+            <div className="">
+
               <Image className="absolute top-[5%] right-[5%]" height={40} width={40} src="/lightBulb.svg" alt="light bulb"/>
             <div className="w-full h-full ">
               <Image
-                src={activeLesson?.avatar}
+                src={activeLesson?.images[0].avatar}
                 height={477}
                 width={454}
                 alt="lesson image"
-              />
+                />
             </div>
+                </div>
+               } 
+               </div>
             <div className="text-left z-10">
               <h1 className="text-[2rem]">{activeLesson?.title}</h1>
               <p className="">{activeLesson?.content}</p>
@@ -204,7 +211,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
                 </Button>
               ) : (
                 activeBigLesson && (
-                  <Link href={"https://lesson1-robolabssimulation.vercel.app/"}>
+                  <Link href={"https://lesson1-robolabssimulation.vercel.app/"} onClick={()=>localStorage.removeItem("module-data")}>
                     <Button>Go To Simulation</Button>
                   </Link>
                 )

@@ -103,7 +103,7 @@ const SignUp = () => {
                   {...register("role")}
                   name="role"
                   id="role"
-                  className="w-full  text-black focus:outline-none"
+                  className="w-full text-black focus:outline-none"
                 >
                   <option value="">Select Role</option>
                   <option value="admin">Admin</option>
@@ -111,7 +111,7 @@ const SignUp = () => {
                 </select>
               </div>
               {errors.role?.message && (
-                <div className="h-1 text-red-600 text-xs flex justify-center items-center">
+                <div className="h-1 text-white text-xs flex justify-center items-center">
                   {errors.role?.message}
                 </div>
               )}

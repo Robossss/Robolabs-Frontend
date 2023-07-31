@@ -8,7 +8,9 @@ import { recommendations } from "./recommendations";
 import RecommendationCard from "./RecommendationCard";
 import Header from "@/components/Header";
 
+
 export default function Home() {
+  // localStorage.clear()
   return (
     <main className="text-white m-auto">
       <section id="home" className=" max-h-[1440px] bg-purple bg-[url('/flower.svg')] bg-contain bg-right bg-no-repeat ">
@@ -50,19 +52,19 @@ export default function Home() {
       </section>
       <section id="about" className="bg-purple bg-[url('/adinkra.svg')] bg-blend-overlay bg-cover [&>*>h1]:text-3xl [&>*>h1]:mb-10 py-28 px-10 [&>*]:mb-52">
         <div className="flex flex-col items-center text-center ">
-          <h1>Who are we ?</h1>
-          <p className="w-1/2 min-w-[500px]">
-            RoboFlow is a leading online learning platform designed to empower
+          <h1 className="text-4xl font-bold">Who are we ?</h1>
+          <p className="w-2/3 min-w-[500px] text-3xl">
+            Robolabs is a leading online learning platform designed to empower
             individuals with the skills and knowledge needed to excel in the
             field of robotics programming. With a focus on hands-on learning,
-            RoboFlow offers a comprehensive curriculum that covers a wide range
+            Robolabs offers a comprehensive curriculum that covers a wide range
             of topics, including robot design, programming, and control.
           </p>
         </div>
         <div className="flex flex-col items-center text-center ">
-          <h1>Mission Statement</h1>
-          <p className="w-[80%] min-w-[500px]">
-            At RoboFlow, our mission is to make robotics education accessible to
+          <h1 className="text-4xl font-bold">Mission Statement</h1>
+          <p className="w-[90%] min-w-[500px] text-3xl">
+            At Robolabs, our mission is to make robotics education accessible to
             everyone. Our user-friendly platform is designed to be easy to
             navigate, even for those with little or no programming experience
             Our courses are carefully crafted to be engaging, interactive, and

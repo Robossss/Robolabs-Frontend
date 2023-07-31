@@ -10,6 +10,7 @@ const LessonCard = ({ ...data }) => {
   let course: any
   if(data.level) {
     course = data.level
+    localStorage.setItem("progress-id",data._id)
   }else {
     course = data
   }
@@ -51,9 +52,9 @@ const LessonCard = ({ ...data }) => {
           <>
             <p className="text-2xl font-bold">{data.progress}% completed</p>
             <div className="h-2 bg-white w-1/2 rounded-xl">
-              {course.progress ? (
+              {data.progress ? (
                 <div
-                  className={`h-2 bg-[#D87F60] rounded-xl w-[${data.progress}%]`}
+                  className={`h-2 bg-[#D87F60] rounded-xl w-[${data.progress.toString()}%]`}
                 ></div>
               ) : (
                 ""

@@ -24,33 +24,44 @@ const Lessons = () => {
   const [activeSection, setActiveSection] = useState(sections[0]);
   
   const getModules = async (url: string, config: any) => {
-    try {
-      const response = await axios.get(url, config);
-      setData(response.data[0]);
-      toast.success("Modules loaded")
-    } catch (error: any) {
-      // console.log(error.response.data.message);
-      // if(error.response){
-        toast.error(error.response?.data.message || error.message);
-        console.log(error.response?.data.message || error.message);
-
-      // }else{
-      //   console.log(error)
-      //   toast("Something went wrong")
-      // }
+    const data =localStorage.getItem("module-data")
+    if(data){
+      setData(JSON.parse(data))
+      // console.log("using cached data")
+    }else {
+      try {
+        const response = await axios.get(url, config);
+        setData(response.data[0]);
+        localStorage.setItem("module-data",JSON.stringify(response.data[0],null,2))
+        toast.success("Modules loaded")
+      } catch (error: any) {
+        // console.log(error.response.data.message);
+        // if(error.response){
+          toast.error(error.response?.data.message || error.message);
+          console.log(error.response?.data.message || error.message);
+  
+        // }else{
+        //   console.log(error)
+        //   toast("Something went wrong")
+        // }
+      }
     }
   };
   useEffect(() => {
+    toast.info('Loading Modules',{
+      autoClose: false
+    })
     const url = baseUrl + "module";
 
     const token = localStorage.getItem("user-token");
     getModules(url, { headers: { Authorization: `Bearer ${token}` } });
    setUsername(localStorage.getItem("username") || "no user")
     setRole(localStorage.getItem("user-role") || "student")
+    toast.dismiss()
   }, []);
 
-  const [username, setUsername] = useState("player 1");
-  const [role, setRole] = useState("killer");
+  const [username, setUsername] = useState("Jon Doe");
+  const [role, setRole] = useState("student");
 
   let modules;
   if (activeSection === "featured") {
@@ -58,10 +69,10 @@ const Lessons = () => {
   } else if (activeSection === "in progress") {
     modules = data?.progress
   }else {
-    modules = data?.progress.filter(item=> item["progress"]===100)
+    modules = data?.progress.filter(item=> item["completed"]===100)
     //   modules = data?.progressType = "Completed"
   }
-  console.log(activeSection)
+  // console.log(activeSection)
 
   return (<>
     <main className="bg-white text-white min-h-screen ">
@@ -116,8 +127,8 @@ const Lessons = () => {
         ))}
       </div>
       <div className="grid gap-16">
-      {modules ?
-        modules.map((item) => <LessonCard key={item._id} {...item} />): <h1 className="text-black text-7xl text-center">No modules {activeSection}</h1>}
+      {modules && modules.length> 0 ?
+        modules.map((item) => <LessonCard key={item._id} {...item} />): <h1 className="text-black text-[35px] font-bold text-center">No modules {activeSection}</h1>}
         </div>
       </section>
 <pre className="text-black">{JSON.stringify(data,null,2)}</pre>
