@@ -22,13 +22,27 @@ type Sublesson = {
   _id: number;
 };
 
+type Quiz = {
+  _id: number;
+  question: string;
+  options: {
+    option: string;
+    _id: number;
+  }[];
+  correctOption: string;
+  level: number;
+  __v: 0;
+};
+
 const Lesson = ({ params }: { params: { id: number } }) => {
   const router = useRouter();
 
   const updateProgress = async () => {
     // console.log(bigLessons.indexOf(activeBigLesson));
-    const updateId = localStorage.getItem("progress-id")
-    const progress = ((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 50;
+    const updateId = localStorage.getItem("progress-id");
+    const progress =
+      ((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 50;
+    console.log(bigLessons.indexOf(activeBigLesson!), activeBigLesson);
     try {
       const url = baseUrl + `progress/${updateId}`;
       const body = {
@@ -36,6 +50,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         level: activeBigLesson?.module,
       };
       const token = localStorage.getItem("user-token");
+      console.log(body, token);
       // console.log(body);
       const update = await axios.put(url, body, {
         headers: { Authorization: `Bearer ${token}` },
@@ -56,57 +71,221 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       // console.log(start);
       setBigLessons(start.data);
       setActiveBigLesson(bigLessons[0]);
+      toast.dismiss();
+      toast.success("Lessons loaded");
     } catch (error: any) {
-      toast.error(error.response);
+      toast.error(error.response.data.message || "Network Error");
       setTimeout(() => getLessons(url, config), 1000);
     }
   };
-  useEffect(() => {
-    const startUrl = baseUrl + `lesson/${params.id}`;
-    const token = localStorage.getItem("user-token");
-    getLessons(startUrl, { headers: { Authorization: `Bearer ${token}` } });
-  }, [params.id]);
+  const getQuiz = async (url: string, config: any) => {
+    try {
+      toast.info("Loading quizzes", {
+        autoClose: false,
+      });
+      const start = await axios.get(url, config);
+      console.log(start);
+      setQuizzes(start.data);
+      toast.dismiss();
+      toast.success("Quizzes loaded");
+    } catch (error: any) {
+      if(error.response.data.message){
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Network Error")
+      }
+      setTimeout(() => getQuiz(url, config), 1000);
+    }
+  };
 
   const [bigLessons, setBigLessons] = useState<Lesson[]>([]);
   const [activeBigLesson, setActiveBigLesson] = useState<Lesson>();
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [isTakingQuiz, setIsTakingQuiz] = useState(false);
+  // const [activeQuiz,setActiveQuiz] = useState()
+  const [quizIndex, setQuizIndex] = useState<number>(0);
+  const [quizCompleted, setQuizCompleted] = useState<boolean>(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-  if (activeBigLesson && (currentIndex + 1 === activeBigLesson?.lessons?.length)) {
+  useEffect(() => {
+    const startUrl = baseUrl + `lesson/${params.id}`;
+    const quizUrl = baseUrl + `qa/${params.id}`;
+    const token = localStorage.getItem("user-token");
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+    getLessons(startUrl, config);
+    getQuiz(quizUrl, config);
+  }, []);
+  if (quizCompleted && activeBigLesson) {
     updateProgress();
   }
 
   function getNextLesson() {
     setCurrentIndex(currentIndex - 1);
-    // if (!activeBigLesson?.lesson) {
-    //   return
-    // }
-    // const sublessonCount = activeBigLesson.lesson.length
-    // const currentLessonIndex = activeBigLesson.lesson.indexOf(activeLesson)
-    // if (currentLessonIndex < sublessonCount) {
-    // setNextLesson(activeBigLesson.lessons[currentLessonIndex+1])
-    // }
   }
 
   function getPreviousLesson() {
     setCurrentIndex(currentIndex + 1);
-    // if (!activeBigLesson?.lesson) {
-    //   return
-    // }
-    // const currentLessonIndex = activeBigLesson.lesson.indexOf(activeLesson)
-    // if (currentLessonIndex > 0) {
-    //   return activeBigLesson.lessons[currentLessonIndex - 1]
-    // }
+  }
+  const activeLesson = activeBigLesson?.lessons[currentIndex];
+  const activeQuiz:Quiz = quizzes[quizIndex];
+  // console.log("aaaaaaaaaaaaaaaaaaaa",quizIndex)
+
+  const [selectedOption, setSelectedOption] = useState<string>();
+  const [answer, setAnswer] = useState<string>();
+
+  const checkAnswer = () => {
+    if (activeQuiz) {
+      // console.log("wow",activeQuiz.correctOption);
+      setAnswer(activeQuiz.correctOption);
+    }
+  };
+
+  const goToPrevious =()=> {
+    if (isTakingQuiz) {
+      if (quizIndex > 0) {
+        setQuizIndex(quizIndex - 1);
+      } else {
+        setIsTakingQuiz(false);
+      }
+    } else {
+      setCurrentIndex(currentIndex - 1);
+    }
+    // setActiveLesson(activeBigLesson.lessons[currentIndex-1])
+  }
+  const goToNext = ()=> {
+    setCurrentIndex(currentIndex + 1);
+    // setActiveLesson(activeBigLesson.lessons[currentIndex+1])
   }
 
-  // const changeSubLesson = (currentIndex:number,add:boolean)=> {
-  //   if(add){
-  //     setCurrentIndex(currentIndex+1)
-  //   }else{
-  //     setCurrentIndex(currentIndex-1)
-  //   }
-  //   setActiveLesson(bigLessons[0].lessons[currentIndex])
-  // }
-  const activeLesson = activeBigLesson?.lessons[currentIndex];
+  const takeQuiz = ()=>{
+    setIsTakingQuiz(true);
+    // setAnswer(activeQuiz.correctOption)
+    // setActiveQuiz(activeQuiz)
+  }
+  
+
+  const goToNextQuestion = ()=> {
+    setSelectedOption(undefined);
+    setAnswer(undefined);
+    if (quizIndex < quizzes.length - 1) {
+      setQuizIndex(quizIndex + 1);
+    } else {
+      setIsTakingQuiz(false)
+      setQuizCompleted(true);
+    }
+  }
+
+  const checkQuizAnswer = ()=> {
+    checkAnswer();
+    setTimeout(() => {
+      setAnswer(undefined);
+      setSelectedOption(undefined);
+      if (quizIndex < quizzes.length - 1) {
+        setQuizIndex(quizIndex + 1);
+      } else {
+        setIsTakingQuiz(false)
+        setQuizCompleted(true);
+      }
+    }, 1000);
+  }
+
+  
+  const Option = ({ option }: { option: string }) => {
+
+
+    const getColor =()=> {
+  
+      if(option===selectedOption){
+        if(answer){
+          if(answer===option){
+            return "bg-[#5ECA69]"
+          }else{
+            return "bg-red-600"
+          }
+        }
+        return "bg-yellow-500"
+    }else{
+      if(answer && option===answer){
+        return "bg-[#5ECA69]"
+      }
+      return "bg-[#B488D4]"
+    }
+  }
+
+    return (
+      <div
+        onClick={() => setSelectedOption(option)}
+        className={` mx-auto hover:bg-yellow-500
+
+      ${getColor()}
+      flex justify-center items-center rounded-[96px] text-2xl font-bold w-[400px] h-[93px] transition-all cursor-pointer hover:scale-110 hover:text-white`}
+      >
+        {option}
+      </div>
+    );
+  };
+
+  const LessonContent = () => {
+    return (
+      <section
+        className={`relative min-h-[70%] min-w-full h-fit w-fit text-white  rounded-[90px] bg-no-repeat  overflow-clip row-span-4  grid gap-4  items-center justify-center ${
+          activeLesson?.images[0].avatar
+            ? "pr-8 bg-[#662C91] grid bg-[url('/lessonBgRobot.svg')] bg-right grid-cols-2"
+            : "p-32 flex bg-black bg-[url('/noimgbg.svg')] bg-cover text-center"
+        }`}
+      >
+        {isTakingQuiz && !quizCompleted ? (
+          <div className="flex flex-col gap-12 p-16 col-span-2 text-center">
+            <h1 className="text-7xl font-bold">Q{quizIndex + 1}</h1>
+            <h1 className="text-3xl">{activeQuiz.question}</h1>
+            <div className="grid gap-4 grid-cols-2 place-content-center items-center justify-center">
+              {activeQuiz.options &&
+                activeQuiz.options.map(
+                  ({ option, _id }: { option: string; _id: number }) => (
+                    <Option key={_id} option={option} />
+                  )
+                )}
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="">
+              {activeLesson?.images[0].avatar && (
+                <div className="">
+                  <Image
+                    className="absolute top-[5%] right-[5%]"
+                    height={40}
+                    width={40}
+                    src="/lightBulb.svg"
+                    alt="light bulb"
+                  />
+                  <div className="w-full h-full ">
+                    <Image
+                      src={activeLesson?.images[0].avatar}
+                      height={477}
+                      width={454}
+                      alt="lesson image"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="text-left z-10">
+              <h1 className="text-[2rem]">{activeLesson?.title}</h1>
+              <p
+                className={` ${
+                  activeLesson?.images[0].avatar || "text-center text-2xl"
+                } `}
+              >
+                {activeLesson?.content}
+              </p>
+            </div>
+          </>
+        )}
+      </section>
+    );
+  };
+
   return (
     <main className=" bg-purple bg-[url('/adinkra.svg')] min-h-screen  bg-blend-overlay">
       <header className=" p-5 flex justify-between items-center">
@@ -119,9 +298,9 @@ const Lesson = ({ params }: { params: { id: number } }) => {
           </div>
         </div>
       </header>
-      <section className="flex h-full max-h-[800px] text-white">
-        <aside className="min-w-[200px] py-10 w-[30%] flex flex-col justify-between items-center">
-          <div className="flex flex-col items-end m-0">
+      <section className="flex h-[calc(100vh-5rem)] text-white">
+        <aside className="min-w-[200px] h-full py-10 w-[30%] flex flex-col justify-between items-center">
+          <div className="flex flex-col gap-4 w-full items-center m-0">
             <Image
               src="/lessonsRobot.svg"
               height={300}
@@ -131,68 +310,35 @@ const Lesson = ({ params }: { params: { id: number } }) => {
             {/* <ul className="flex flex-col gap-8"> */}
             {bigLessons.map((lesson, index) => (
               // <details key={index} className="">
-              <h1
+              <button
+                disabled={isTakingQuiz}
                 key={index}
                 className={`${
-                  lesson === activeBigLesson &&
-                  "text-purple bg-white rounded-l-[50px]"
-                } py-4 pl-4 w-full -mr-4 cursor-pointer text-2xl font-bold `}
+                  lesson.subject === activeBigLesson?.subject ?
+                  "text-purple bg-white rounded-l-[25px]" : ""
+                } p-4 h-[70px] w-full -mr-4 cursor-pointer text-2xl text-left font-bold `}
                 onClick={() => {
                   setActiveBigLesson(lesson);
                   setCurrentIndex(0);
+
                   // setActiveLesson(activeBigLesson.lessons[currentIndex])
                 }}
               >
                 1.{index} {lesson.subject}
-              </h1>
-              // {
-              //   lesson.lessons.map((lesson,index)=> {
-              //     // setCurrentIndex(index)
-              //     return (
-              //       <li className={`ml-4 cursor-pointer ${lesson===activeLesson && "bg-white text-purple rounded-md text-xl"}`} key={index} onClick={()=>setActiveLesson(lesson)}>{lesson.title}</li>
-              //     )
-              //   })s
-              //   }
-
-              //   </details>
+              </button>
             ))}
-            {/* </ul> */}
           </div>
           <Button onClick={() => router.push("lessons")}>
             Go To Dashboard
           </Button>
         </aside>
-        <main className="w-full max-h-[800px]  p-16 bg-white grid grid-rows-5 ">
-          <section className={`relative bg-[#662C91] h-full text-white bg-[url('/lessonBgRobot.svg')] rounded-[90px] bg-no-repeat bg-right overflow-clip row-span-4 pr-8 grid gap-4 grid-cols-2 items-center justify-center ${!activeLesson?.images[0].avatar && "grid-cols-1 bg-black bg-[url('/noimgbg.svg')]"}`}>
-            <div className="">
-            {activeLesson?.images[0].avatar &&
-            <div className="">
-
-              <Image className="absolute top-[5%] right-[5%]" height={40} width={40} src="/lightBulb.svg" alt="light bulb"/>
-            <div className="w-full h-full ">
-              <Image
-                src={activeLesson?.images[0].avatar}
-                height={477}
-                width={454}
-                alt="lesson image"
-                />
-            </div>
-                </div>
-               } 
-               </div>
-            <div className="text-left z-10">
-              <h1 className="text-[2rem]">{activeLesson?.title}</h1>
-              <p className="">{activeLesson?.content}</p>
-            </div>
-          </section>
+        <main className="w-full h-full p-16 bg-white grid grid-rows-[auto,auto] ">
+          <LessonContent />
           <div className="w-full flex justify-between items-center">
             <div className="">
               {currentIndex !== 0 && (
                 <Button
-                  onClick={() => {
-                    setCurrentIndex(currentIndex - 1);
-                    // setActiveLesson(activeBigLesson.lessons[currentIndex-1])
-                  }}
+                  onClick={goToPrevious}
                 >
                   Previous
                 </Button>
@@ -200,26 +346,52 @@ const Lesson = ({ params }: { params: { id: number } }) => {
             </div>
             <div className="">
               {activeBigLesson &&
-              currentIndex !== activeBigLesson.lessons.length - 1 ? (
-                <Button
-                  onClick={() => {
-                    setCurrentIndex(currentIndex + 1);
-                    // setActiveLesson(activeBigLesson.lessons[currentIndex+1])
-                  }}
-                >
-                  Next
-                </Button>
-              ) : (
-                activeBigLesson && (
-                  <Link href={"https://lesson1-robolabssimulation.vercel.app/"} onClick={()=>localStorage.removeItem("module-data")}>
+                (currentIndex !== activeBigLesson.lessons.length - 1 &&
+                !quizCompleted ? (
+                  <Button
+                    onClick={goToNext}
+                    disabled={isTakingQuiz}
+                  >
+                    Next
+                  </Button>
+                ) : currentIndex === activeBigLesson.lessons.length - 1 &&
+                  quizzes &&
+                  !isTakingQuiz ? (
+                  <Button
+                    onClick={takeQuiz}
+                  >
+                    Take Quiz
+                  </Button>
+                ) : isTakingQuiz ? (
+                  !selectedOption ? (
+                    <Button
+                      disabled={Boolean(!answer)}
+                      onClick={goToNextQuestion}
+                    >
+                      Next Question
+                    </Button>
+                  ) : (!quizCompleted &&
+                    <Button
+                      disabled={Boolean(answer)}
+                      onClick={checkQuizAnswer}
+                    >
+                      Check Answer
+                    </Button>
+                  )
+                ) : (
+                  <Link
+                    href={"https://lesson1-robolabssimulation.vercel.app/"}
+                    onClick={() => localStorage.removeItem("module-data")}
+                  >
                     <Button>Go To Simulation</Button>
                   </Link>
-                )
-              )}
+                ))}
             </div>
           </div>
         </main>
         {/* <pre>{JSON.stringify(activeBigLesson,null,2)}</pre> */}
+        {/* <pre>{JSON.stringify(quizzes, null, 2)}</pre> */}
+        {/* {activeBigLesson?.subject} */}
       </section>
     </main>
   );

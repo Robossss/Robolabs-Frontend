@@ -21,7 +21,7 @@ const Lessons = () => {
   const router = useRouter()
   const [data, setData] = useState<{ progress: []; modules: Module[] }>();
   const sections = ["featured", "in progress", "completed"];
-  const [activeSection, setActiveSection] = useState(sections[0]);
+  const [activeSection, setActiveSection] = useState(sections[1]);
   
   const getModules = async (url: string, config: any) => {
     const data =localStorage.getItem("module-data")
