@@ -41,7 +41,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     // console.log(bigLessons.indexOf(activeBigLesson));
     const updateId = localStorage.getItem("progress-id");
     const progress =
-      ((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100;
+      (((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100).toFixed(2);
     // console.log(bigLessons.indexOf(activeBigLesson!), activeBigLesson);
     try {
       const url = baseUrl + `progress/${updateId}`;
@@ -258,7 +258,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const LessonContent = () => {
     return (
       <section
-        className={`relative min-h-[50%]   bg-[#662C91] min-w-full h-fit w-fit text-white  rounded-[90px] bg-no-repeat  overflow-clip row-span-4  grid gap-4  items-center justify-center ${
+        className={`relative h-full bg-[#662C91]  text-white  rounded-[90px] bg-no-repeat  overflow-clip row-span-4  grid gap-4  items-center justify-center ${
           activeLesson?.images[0].avatar
             ? "pr-8 bg-[#662C91] grid bg-[url('/lessonBgRobot.svg')] bg-right grid-cols-2"
             : "p-32 flex bg-black bg-[url('/noimgbg.svg')] bg-cover text-center"
@@ -298,8 +298,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
                   <div className="w-full h-full ">
                     <Image
                       src={activeLesson?.images[0].avatar}
-                      height={4770}
-                      width={4540}
+                      height={4000}
+                      width={4000}
                       alt="lesson image"
                     />
                   </div>
@@ -368,7 +368,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
 
   return (
     <>
-      <main className=" bg-purple bg-[url('/adinkra.svg')] min-h-screen  bg-blend-overlay">
+      <main className=" bg-purple bg-[url('/adinkra.svg')] min-h-screen overflow-clip scroll  bg-blend-overlay">
         <header className=" p-5 flex justify-between items-center">
           <Image src="/logo2.svg" alt="logo" width={200} height={20} />
           <h1 className="text-3xl font-extrabold">Introduction to RoboLabs</h1>
@@ -380,7 +380,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
           </div>
         </header>
         <section className="flex min-h-[calc(100vh-5rem)]  text-white">
-          <aside className="min-w-[200px]  py-10 w-[30%] flex flex-col justify-between items-center">
+          <aside className="min-w-[200px] h-full  pb-10 w-[30%] flex flex-col gap-4 items-center">
             <div className="flex flex-col h-full gap-4 w-full items-center m-0">
               <Image
                 src="/lessonsRobot.svg"

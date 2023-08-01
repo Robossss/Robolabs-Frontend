@@ -41,8 +41,8 @@ const LessonCard = ({ ...data }) => {
     }
   };
 
-  const progress:string = `w-[${data.progress}%]`
-  console.log(progress)
+  // const progress:string = ``
+  // console.log(progress)
   return (
     <div className="text-white h-[320px] bg-purple w-[90%] max-w-[1280px] rounded-[50px] shadow-x mx-auto p-8 grid grid-cols-2 gap-8">
       {/* <Image src="/profile1.png" width={300} height={300} alt="lesson image" /> */}
@@ -56,9 +56,7 @@ const LessonCard = ({ ...data }) => {
             <p className="text-2xl font-bold">{data.progress}% completed</p>
             <div className="h-2 bg-white w-1/2 rounded-xl">
               {data.progress ? (
-                <div
-                  className={`${progress} h-2 bg-[#D87F60] rounded-xl `}
-                ></div>
+                <div className={`  h-2 bg-[#D87F60] rounded-xl ${data.progress ? `w-[${data.progress}%]` : "w-[33%]"}`}></div>
               ) : (
                 ""
               )}
@@ -68,19 +66,19 @@ const LessonCard = ({ ...data }) => {
         <Button onClick={startCourse}>Go To Course</Button>
       </div>
       <div className="flex w-[600px] items-start justify-between relative">
-        {course.images?.map((image: any,index:number) => (
-          <div key={image.id} className={`${index===0 ? "":""}  `}>
+        {course.images && (
+          <div key={course.images[0].id}>
             <Image
             
               fill
-              src={image.avatar}
+              src={course.images[0].avatar}
               alt="course image"
               style={{
                   objectFit: "scale-down",
                 }}
                 />
                 </div>
-        ))}
+        )}
       </div>
     </div>
   );
