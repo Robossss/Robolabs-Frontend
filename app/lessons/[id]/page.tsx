@@ -244,7 +244,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
           <div className="flex flex-col gap-12 p-16 col-span-2 text-center">
             <h1 className="text-7xl font-bold">Q{quizIndex + 1}</h1>
             <h1 className="text-3xl">{activeQuiz.question}</h1>
-            <div className="grid gap-4 grid-cols-2 place-content-center items-center justify-center">
+            <div className="flex flex-wrap gap-4 items-center justify-center">
               {activeQuiz.options &&
                 activeQuiz.options.map(
                   ({ option, _id }: { option: string; _id: number }) => (
@@ -317,7 +317,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
             {bigLessons.map((lesson, index) => (
               // <details key={index} className="">
               <button
-                disabled={isTakingQuiz}
+                disabled={isTakingQuiz || Boolean(activeBigLesson)}
                 key={index}
                 className={`${
                   lesson.subject === activeBigLesson?.subject ?
