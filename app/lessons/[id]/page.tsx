@@ -170,6 +170,9 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     if (quizIndex < quizzes.length - 1) {
       setQuizIndex(quizIndex + 1);
     } else {
+      if(activeBigLesson && bigLessons.indexOf(activeBigLesson)+1 < bigLessons.length-1) {
+        setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson)+1])
+      }
       setIsTakingQuiz(false)
       setQuizCompleted(true);
     }
@@ -183,6 +186,9 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       if (quizIndex < quizzes.length - 1) {
         setQuizIndex(quizIndex + 1);
       } else {
+        if(activeBigLesson && bigLessons.indexOf(activeBigLesson)+1 < bigLessons.length-1) {
+          setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson)+1])
+        }
         setIsTakingQuiz(false)
         setQuizCompleted(true);
       }
@@ -228,7 +234,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const LessonContent = () => {
     return (
       <section
-        className={`relative min-h-[70%] min-w-full h-fit w-fit text-white  rounded-[90px] bg-no-repeat  overflow-clip row-span-4  grid gap-4  items-center justify-center ${
+        className={`relative min-h-[50%]   bg-[#662C91] min-w-full h-fit w-fit text-white  rounded-[90px] bg-no-repeat  overflow-clip row-span-4  grid gap-4  items-center justify-center ${
           activeLesson?.images[0].avatar
             ? "pr-8 bg-[#662C91] grid bg-[url('/lessonBgRobot.svg')] bg-right grid-cols-2"
             : "p-32 flex bg-black bg-[url('/noimgbg.svg')] bg-cover text-center"
@@ -262,8 +268,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
                   <div className="w-full h-full ">
                     <Image
                       src={activeLesson?.images[0].avatar}
-                      height={477}
-                      width={454}
+                      height={4770}
+                      width={4540}
                       alt="lesson image"
                     />
                   </div>
@@ -271,7 +277,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
               )}
             </div>
             <div className="text-left z-10">
-              <h1 className="text-[2rem]">{activeLesson?.title}</h1>
+              <h1 className="text-[2rem] font-bold">{activeLesson?.title}</h1>
               <p
                 className={` ${
                   activeLesson?.images[0].avatar || "text-center text-2xl"
@@ -290,7 +296,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     <main className=" bg-purple bg-[url('/adinkra.svg')] min-h-screen  bg-blend-overlay">
       <header className=" p-5 flex justify-between items-center">
         <Image src="/logo2.svg" alt="logo" width={200} height={20} />
-        <h1 className="text-3xl">Introduction to RoboLabs</h1>
+        <h1 className="text-3xl font-extrabold">Introduction to RoboLabs</h1>
         <div className="flex gap-4">
           <div className="flex justify-center gap-4 w-[200px]">
             <Image src="/box.svg" alt="Coding Area" width={20} height={20} />
@@ -298,9 +304,9 @@ const Lesson = ({ params }: { params: { id: number } }) => {
           </div>
         </div>
       </header>
-      <section className="flex h-[calc(100vh-5rem)] text-white">
-        <aside className="min-w-[200px] h-full py-10 w-[30%] flex flex-col justify-between items-center">
-          <div className="flex flex-col gap-4 w-full items-center m-0">
+      <section className="flex min-h-[calc(100vh-5rem)]  text-white">
+        <aside className="min-w-[200px]  py-10 w-[30%] flex flex-col justify-between items-center">
+          <div className="flex flex-col h-full gap-4 w-full items-center m-0">
             <Image
               src="/lessonsRobot.svg"
               height={300}
@@ -332,7 +338,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
             Go To Dashboard
           </Button>
         </aside>
-        <main className="w-full h-full p-16 bg-white grid grid-rows-[auto,auto] ">
+        <main className="w-full min-h-full max-h-fit p-16 bg-white grid grid-rows-[auto,auto] gap-16 ">
           <LessonContent />
           <div className="w-full flex justify-between items-center">
             <div className="">
@@ -391,7 +397,6 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         </main>
         {/* <pre>{JSON.stringify(activeBigLesson,null,2)}</pre> */}
         {/* <pre>{JSON.stringify(quizzes, null, 2)}</pre> */}
-        {/* {activeBigLesson?.subject} */}
       </section>
     </main>
   );
