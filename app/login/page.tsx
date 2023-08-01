@@ -38,7 +38,7 @@ const Login = () => {
   const router = useRouter();
 
   const submitData: SubmitHandler<Inputs> = async (userData) => {
-    toast.info('Submitting Form',{
+    toast.loading('Signing you in',{
       autoClose: false
     })
     const url = baseUrl + "auth/login";
@@ -63,8 +63,9 @@ const Login = () => {
         router.push("/lessons");
       }, 2000);
     } catch (error: any) {
-      toast.error(error.response.data.message);
-      reset()
+      toast.error(error.response?.data.message  || error.response || "Network Error");
+      setTimeout(() => toast.dismiss, 2000);
+      setTimeout(() => submitData(userData), 3000);
     }
   };
 
@@ -104,7 +105,7 @@ const Login = () => {
       </div>
 </section>
     </main>
-    <ToastContainer
+    {/* <ToastContainer
 position="top-center"
 autoClose={5000}
 hideProgressBar={false}
@@ -114,7 +115,7 @@ rtl={false}
 pauseOnFocusLoss
 draggable
 pauseOnHover
-/>
+/> */}
   </>
   );
 };
