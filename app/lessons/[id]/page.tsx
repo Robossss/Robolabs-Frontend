@@ -40,13 +40,12 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const updateProgress = async () => {
     // console.log(bigLessons.indexOf(activeBigLesson));
     const updateId = localStorage.getItem("progress-id");
-    const progress =
-      (((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100).toFixed(2);
+    const progress:number = (((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100);
     // console.log(bigLessons.indexOf(activeBigLesson!), activeBigLesson);
     try {
       const url = baseUrl + `progress/${updateId}`;
       const body = {
-        progress: progress,
+        progress: progress.toFixed(2),
         level: updateId,
       };
       const token = localStorage.getItem("user-token");
@@ -258,9 +257,9 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const LessonContent = () => {
     return (
       <section
-        className={`relative h-full bg-[#662C91]  text-white  rounded-[90px] bg-no-repeat  overflow-clip row-span-4  grid gap-4  items-center justify-center ${
+        className={`relative bg-[#662C91] flex gap-8 text-white  rounded-[90px] bg-no-repeat  overflow-clip items-center justify-center ${
           activeLesson?.images[0].avatar
-            ? "pr-8 bg-[#662C91] grid bg-[url('/lessonBgRobot.svg')] bg-right grid-cols-2"
+            ? "pr-8 bg-[#662C91]  bg-[url('/lessonBgRobot.svg')] bg-right grid-cols-2"
             : "p-32 flex bg-black bg-[url('/noimgbg.svg')] bg-cover text-center"
         }`}
       >
@@ -285,9 +284,9 @@ const Lesson = ({ params }: { params: { id: number } }) => {
           </>
         ) : (
           <>
-            <div className="">
+            <div className="h-full w-[40%]">
               {activeLesson?.images[0].avatar && (
-                <div className="">
+                <div className="flex items-center w-full h-full">
                   <Image
                     className="absolute top-[5%] right-[5%]"
                     height={40}
@@ -295,18 +294,19 @@ const Lesson = ({ params }: { params: { id: number } }) => {
                     src="/lightBulb.svg"
                     alt="light bulb"
                   />
-                  <div className="w-full h-full ">
+                  <div className="w-full h-full object-cover ">
                     <Image
                       src={activeLesson?.images[0].avatar}
                       height={4000}
                       width={4000}
                       alt="lesson image"
+                      className="w-full h-full"
                     />
                   </div>
                 </div>
               )}
             </div>
-            <div className="text-left z-10">
+            <div className="text-left z-10 w-[60%]">
               <h1 className="text-[2rem] font-bold">{activeLesson?.title}</h1>
               <p
                 className={` ${
