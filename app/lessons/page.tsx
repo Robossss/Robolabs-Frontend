@@ -89,7 +89,7 @@ const Lessons = () => {
   return (
     <>
       <main className="bg-white text-white min-h-screen ">
-        <section className="h-1/2 bg-purple bg-[url('/adinkra.svg')] bg-blend-overlay">
+        <section className="h-screen max-h-[1000px] bg-purple bg-[url('/adinkra.svg')] bg-blend-overlay">
           <header className=" p-5 flex justify-between items-center">
             <Image
               className=" cursor-pointer"
@@ -126,13 +126,16 @@ const Lessons = () => {
           </header>
           {/* <ImageCarousel username={username}/> */}
           <div className="grid grid-cols-2">
+            <div className="flex justify-center items-center">
+
             <Image
-              width={632}
-              height={632}
+              width={400}
+              height={400}
               src="/lessonsRobot.svg"
               alt="lessons robot"
-            />
-            <div className="flex flex-col gap-4 items-center">
+              />
+              </div>
+            <div className="flex flex-col gap-4 pb-[10%] items-center">
               <Image
                 width={270}
                 height={270}
@@ -154,6 +157,11 @@ const Lessons = () => {
                 src="/analytics.svg"
                 alt="analytics"
               />
+              <div className="flex justify-between gap-8 -ml-4 text-xs">
+                <p>Activity Completion</p>
+                <p>1 day Streak</p>
+                <p>Achievements</p>
+              </div>
             </div>
           </div>
         </section>
@@ -183,7 +191,7 @@ const Lessons = () => {
             )}
           </div>
         </section>
-        <pre className="text-black">{JSON.stringify(data,null,2)}</pre>
+        {/* <pre className="text-black">{JSON.stringify(data,null,2)}</pre> */}
       </main>
     </>
   );

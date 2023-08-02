@@ -109,7 +109,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
             autoClose: false,
           });
           const start = await axios.get(url, config);
-          console.log(JSON.stringify(start.data, null, 2));
+          // console.log(JSON.stringify(start.data, null, 2));
 
           setBigLessons(start.data);
           localStorage.setItem("lessons", JSON.stringify(start.data, null, 2));
@@ -208,6 +208,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         if(activeBigLesson.video && isWatchingVideo){
 
           setIsWatchingVideo(false)
+          setCurrentIndex(0)
+          // setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson) + 1])
         }
         setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson) + 1]);
         setCurrentIndex(0)
@@ -224,7 +226,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
 
   const watchVideo = () => {
     setIsWatchingVideo(true);
-    setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson!) + 1]);
+    // setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson!) + 1]);
   };
 
   const takeQuiz = () => {
@@ -451,7 +453,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
               </Button>
             ) : (
               <Link
-                href={"https://robolabssimulation.vercel.app/"}
+                href={"https://lesson1-robolabssimulation.vercel.app/"}
                 target="_blank"
                 onClick={simulate}
               >
@@ -476,7 +478,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
             </div>
           </div>
         </header>
-        <section className="flex min-h-[calc(100vh-5rem)] w-screen text-white">
+        <section className="flex min-h-[calc(100vh-5rem)] w-screen text-[#F0E4C5]">
           <aside className="min-w-[200px] pb-10 w-[30%] flex flex-col gap-4  items-center justify-between">
             <div className="flex flex-col h-full w-full items-center m-0">
               <Image

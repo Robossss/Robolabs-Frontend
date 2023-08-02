@@ -28,7 +28,7 @@ const LessonCard = ({ ...data }) => {
       const start = await axios.post(url, body, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(start)
+      console.log(body,start)
     } catch (error: any) {
       toast.error(error.response.data.message || error.response || "Network Error");
       console.log(error.response.data.message || error.response || "Network Error");
@@ -55,17 +55,18 @@ const LessonCard = ({ ...data }) => {
         <h1 className="text-2xl text-white font-bold">
           {course.name}
         </h1>
-        {data.progressType && (
+        {data.progress ? (
           <>
             <p className="text-2xl font-bold">{progress}% completed</p>
             <div className="h-2 bg-white w-1/2 rounded-xl">
               {data.progress ? (
-                <div className={`  h-2 bg-[#D87F60] rounded-xl ${data.progress ? `w-[${progress}%]` : "w-[10%]"}`}> </div>
-              ) : (
-                ""
-              )}
+                <div className={`  h-2 bg-[#D87F60]  w-[${progress}%] rounded-xl`}> </div>
+              ) : <p>{course.description}</p>
+              }
             </div>
           </>
+        ):(
+          <p>{course.description}</p>
         )}
         <Button onClick={startCourse}>Go To Course</Button>
       </div>
