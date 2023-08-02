@@ -22,6 +22,7 @@ const Lessons = () => {
   
 
   useEffect(() => {
+    toast.dismiss()
     const getModules = async (url: string, config: any) => {
       const data = localStorage.getItem("module-data");
       if (data) {
@@ -171,7 +172,7 @@ const Lessons = () => {
             )}
           </div>
         </section>
-        {/* <pre className="text-black">{JSON.stringify(data,null,2)}</pre> */}
+        <pre className="text-black">{JSON.stringify(data,null,2)}</pre>
       </main>
     </>
   );

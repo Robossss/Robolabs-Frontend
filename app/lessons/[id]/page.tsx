@@ -40,10 +40,11 @@ const Lesson = ({ params }: { params: { id: number } }) => {
 
   const updateProgress = async (setProgress?:number) => {
     // console.log(bigLessons.indexOf(activeBigLesson));
+    toast.dismiss()
     const updateId = localStorage.getItem("progress-id");
     const progress: number = setProgress ??
-      ((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100;
-    // console.log(bigLessons.indexOf(activeBigLesson!), activeBigLesson);
+      (((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100);
+      console.log(updateId,progress)
     try {
       const url = baseUrl + `progress/${updateId}`;
       const body = {
@@ -57,6 +58,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log(update);
+      localStorage.removeItem("module-data")
     } catch (error: any) {
       toast.error(error.response.data.message);
       console.log(error.response.data.message);
@@ -78,6 +80,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   useEffect(() => {
+    toast.dismiss()
     const startUrl = baseUrl + `lesson/${params.id}`;
     const quizUrl = baseUrl + `qa/${params.id}`;
     const token = localStorage.getItem("user-token");
@@ -86,6 +89,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       const cachedLessons = localStorage.getItem("lessons");
       if (cachedLessons) {
         setBigLessons(JSON.parse(cachedLessons));
+        setActiveBigLesson(JSON.parse(cachedLessons)[0]);
         toast.dismiss();
       } else {
         try {
@@ -97,7 +101,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   
           setBigLessons(start.data);
           localStorage.setItem("lessons", JSON.stringify(start.data, null, 2));
-          // setActiveBigLesson(bigLessons[0]);
+          setActiveBigLesson(start.data[0]);
+
           toast.dismiss();
   
           toast.success("Lessons loaded");
@@ -181,6 +186,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   };
   const goToNext = () => {
     if(currentIndex===activeBigLesson!.lessons.length-1){
+
       updateProgress();
       if (
         activeBigLesson &&
@@ -189,7 +195,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         if(!quizCompleted){
           setCurrentIndex(0)
         }
-        setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson) + 1]);
+        setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson) + 1])
         setIsWatchingVideo(false)
       }else {
         setIsTakingQuiz(true)
@@ -253,10 +259,12 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   };
 
   const simulate = ()=> {
+
     updateProgress(100)
     toast.success("Lessons Completed")
     localStorage.removeItem("module-data")
-    router.push('/lessons')
+    setTimeout(()=>router.push('/lessons'),4000
+    )
 
     // setCurrentIndex(0)
     // setIsTakingQuiz(false)
@@ -298,14 +306,14 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const LessonContent = () => {
     return (
       <section
-        className={`relative max-h-[250px] lg:max-h-[380px] 2xl:max-h-[460px] bg-[#662C91] grid min-h-[300px] min-w-[850px] gap-8 text-white bg-no-repeat  overflow-hidden items-center ${!isWatchingVideo && "justify-center rounded-[90px]"} ${
+        className={`relative max-h-[250px] lg:max-h-[380px] 2xl:max-h-[460px] bg-[#662C91] shadow-x grid min-h-[300px] min-w-[850px] gap-8 text-white bg-no-repeat  overflow-hidden items-center ${!isWatchingVideo && "justify-center rounded-[90px]"} ${
           isWatchingVideo && !isTakingQuiz ? "  self-center ":
           activeLesson?.images[0].avatar 
             ? "pr-8 bg-[#662C91]  bg-[url('/lessonBgRobot.svg')] bg-right grid-cols-[4fr,6fr]"
             : "p-[5%] flex bg-black bg-[url('/noimgbg.svg')] bg-cover text-center w-full h-full "
         }`}
       >
-        {isTakingQuiz && !quizCompleted ? (
+        {activeBigLesson ?((isTakingQuiz && !quizCompleted) ? (
           <div className="flex flex-col gap-12 p-8 2xl:p-16 col-span-2 text-center">
             <h1 className="text-7xl font-bold">Q{quizIndex + 1}</h1>
             <h1 className="text-3xl">{activeQuiz.question}</h1>
@@ -338,7 +346,7 @@ Your browser does not support the video tag.
           {activeLesson?.images[0].avatar && 
             <div className="h-full w-full">
               {activeLesson?.images[0].avatar && (
-                <div className="flex items-center w-full h-full">
+                <div className="flex items-center justify-center w-full h-full">
                   <Image
                     className="absolute top-[5%] right-[5%]"
                     height={40}
@@ -346,11 +354,12 @@ Your browser does not support the video tag.
                     src="/lightBulb.svg"
                     alt="light bulb"
                   />
-                  <div className="w-full h-full object-cover ">
+                  <div className="min-w-[150px] h-full  ">
                     <Image
                       src={activeLesson?.images[0].avatar}
                       height={4000}
                       width={4000}
+                      style={{objectFit:"fill"}}
                       alt="lesson image"
                       className="w-full h-full"
                     />
@@ -370,6 +379,8 @@ Your browser does not support the video tag.
               </p>
             </div>
           </>
+        )):(
+          <h1>Lessons Loading</h1>
         )}
       </section>
     );
@@ -433,7 +444,7 @@ Your browser does not support the video tag.
         </header>
         <section className="flex min-h-[calc(100vh-5rem)] w-screen text-white">
           <aside className="min-w-[200px] pb-10 w-[30%] flex flex-col gap-4  items-center justify-between">
-            <div className="flex flex-col h-full gap-4 w-full items-center m-0">
+            <div className="flex flex-col h-full w-full items-center m-0">
               <Image
                 src="/lessonsRobot.svg"
                 height={200}
@@ -450,7 +461,7 @@ Your browser does not support the video tag.
                     lesson.subject === activeBigLesson?.subject
                       ? "text-purple bg-white rounded-l-[25px]"
                       : ""
-                  } p-4  w-full ml-8 border-transparent cursor-pointer text-2xl text-left font-bold `}
+                  } p-2  w-full ml-8 border-transparent cursor-pointer text-lg lg:p-4 lg:text-2xl text-left font-bold `}
                   onClick={() => {
                     setActiveBigLesson(lesson);
                     setCurrentIndex(0);
@@ -466,7 +477,7 @@ Your browser does not support the video tag.
               Go To Dashboard
             </Button>
           </aside>
-          <main className="w-full min-h-full max-h-fit p-16 bg-white grid grid-rows-[auto,auto] justify-center gap-16 ">
+          <main className="w-full min-h-full max-h-fit p-4 lg:p-8 xl:p-16 bg-white grid grid-rows-[auto,auto] justify-center gap-16 ">
             <LessonContent />
             <LessonButtons />
           </main>

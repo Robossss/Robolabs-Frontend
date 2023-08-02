@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,8 +11,7 @@ import { signUpInputs } from "@/components/inputs";
 import { userInfoSchema } from "../userInfo";
 import axios from "axios";
 import { baseUrl } from "@/constants";
-import Loading from "../loading";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
@@ -130,17 +128,6 @@ const SignUp = () => {
           </div>
           </section>
         </main>
-         {/* <ToastContainer
-position="top-center"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={true}
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-/> */}
     </>
   );
 };
