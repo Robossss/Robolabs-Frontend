@@ -61,7 +61,7 @@ const SignUp = () => {
       localStorage.setItem("user-token", token);
       localStorage.setItem("username", newData.username);
       localStorage.setItem("user-role", newData.role);
-      toast.dismiss()
+      toast.dismiss
       toast.success("Account created successfully");
       setTimeout(() => {
         router.push("/lessons");
@@ -86,7 +86,7 @@ const SignUp = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 items-center h-full w-full">
 
             <Image className="" src="/signupImage.svg" width={836} height={856} alt=""/>
-          <section className=" py-14 px-20 flex flex-col items-center">
+          <section className=" px-20 flex flex-col items-center">
             <Image src="/logo1.svg" height={130} width={170} alt="logo" />
             <h1 className="text-2xl mb-7 text-white font-bold my-2">
               Welcome to RoboLabs

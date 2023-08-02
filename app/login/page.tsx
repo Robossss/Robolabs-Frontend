@@ -38,9 +38,7 @@ const Login = () => {
   const router = useRouter();
 
   const submitData: SubmitHandler<Inputs> = async (userData) => {
-    toast.loading('Signing you in',{
-      autoClose: false
-    })
+    toast.loading('Signing you in')
     const url = baseUrl + "auth/login";
     try {
       const response = await axios.post(url, userData, {
@@ -64,20 +62,21 @@ const Login = () => {
       }, 2000);
     } catch (error: any) {
       toast.error(error.response?.data.message  || error.response || "Network Error");
-      setTimeout(() => toast.dismiss, 2000);
-      setTimeout(() => submitData(userData), 3000);
+      setTimeout(() => toast.dismiss(), 5000);
+      setTimeout(() => submitData(userData), 5000);
     }
   };
 
   return (<>
 {/* <ToastContainer theme="dark" /> */}
-    <main className=" min-h-screen h-full bg-purple bg-[url('/loginFlower.svg')] bg-contain bg-left-top bg-no-repeat ">
+    <main className=" h-screen  bg-purple bg-[url('/loginFlower.svg')]  bg-contain bg-left-top bg-no-repeat ">
 <Header/>
-<section className="flex justify-center items-center h-full">
+<section className="flex justify-center items-center">
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 items-center h-full  w-full">
-
-        <Image className="" src="/loginImage.svg" width={836} height={856} alt=""/>
+      <div className="grid grid-cols-1 lg:grid-cols-2 items-center justify-center gap-10 h-full  w-full">
+        <div className="flex items-center justify-center">
+        <Image className="self-center" src="/loginImage.svg" width={836} height={856} alt=""/>
+        </div>
       <section className=" py-14 px-20 flex flex-col items-center justify-center gap-4">
         <Image src="/logo1.svg" height={130} width={170} alt="logo" />
         <h1 className="text-2xl mb-7 text-white font-bold">
@@ -105,17 +104,6 @@ const Login = () => {
       </div>
 </section>
     </main>
-    {/* <ToastContainer
-position="top-center"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-/> */}
   </>
   );
 };

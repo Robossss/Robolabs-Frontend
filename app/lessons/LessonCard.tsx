@@ -27,7 +27,7 @@ const LessonCard = ({ ...data }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      ()=>toast.error(error.response.data.message);
     }
   };
 
@@ -56,7 +56,7 @@ const LessonCard = ({ ...data }) => {
             <p className="text-2xl font-bold">{data.progress}% completed</p>
             <div className="h-2 bg-white w-1/2 rounded-xl">
               {data.progress ? (
-                <div className={`  h-2 bg-[#D87F60] rounded-xl ${data.progress ? `w-[${data.progress}%]` : "w-[33%]"}`}></div>
+                <div className={`  h-2 bg-[#D87F60] rounded-xl ${data.progress ? `w-[${data.progress}%]` : "w-[33%]"}`}> </div>
               ) : (
                 ""
               )}

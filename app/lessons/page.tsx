@@ -1,8 +1,6 @@
 "use client";
 import Image from "next/image";
 import LessonCard from "./LessonCard";
-import ImageCarousel from "./ImageCarousel";
-import { GetServerSideProps } from "next";
 import axios from "axios";
 import { baseUrl } from "@/constants";
 import { useEffect, useState } from "react";
@@ -21,7 +19,7 @@ const Lessons = () => {
   const router = useRouter();
   const [data, setData] = useState<{ progress: []; modules: Module[] }>();
   const sections = ["featured", "in progress", "completed"];
-  const [activeSection, setActiveSection] = useState(sections[1]);
+  const [activeSection, setActiveSection] = useState(data?.progress ?sections[1]:sections[0]);
 
   useEffect(() => {
     const getModules = async (url: string, config: any) => {
@@ -56,6 +54,10 @@ const Lessons = () => {
     getModules(url, { headers: { Authorization: `Bearer ${token}` } });
     setUsername(localStorage.getItem("username") || "no user");
     setRole(localStorage.getItem("user-role") || "student");
+
+    setTimeout(() => toast.dismiss(), 3000);
+    console.log("useEffect");
+    
   }, []);
 
   const [username, setUsername] = useState("Jon Doe");
@@ -162,17 +164,6 @@ const Lessons = () => {
         </section>
         {/* <pre className="text-black">{JSON.stringify(data,null,2)}</pre> */}
       </main>
-      {/* <ToastContainer
-position="top-center"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-/> */}
     </>
   );
 };

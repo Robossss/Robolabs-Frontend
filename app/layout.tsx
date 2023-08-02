@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 import './globals.css'
 import { Inter } from 'next/font/google'
 import Loading from './loading'
-import { ToastContainer } from 'react-toastify'
 import ToastProvider from './toast.provider'
 
 const inter = Inter({ subsets: ['latin'] })

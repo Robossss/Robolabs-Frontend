@@ -12,6 +12,7 @@ type Lesson = {
   _id: string;
   subject: string;
   lessons: Sublesson[];
+  video?: string;
   module: string;
   __v: number;
 };
@@ -40,7 +41,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const updateProgress = async () => {
     // console.log(bigLessons.indexOf(activeBigLesson));
     const updateId = localStorage.getItem("progress-id");
-    const progress:number = (((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100);
+    const progress: number =
+      ((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100;
     // console.log(bigLessons.indexOf(activeBigLesson!), activeBigLesson);
     try {
       const url = baseUrl + `progress/${updateId}`;
@@ -64,65 +66,13 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     }
   };
 
-  const getLessons = async (url: string, config: any) => {
-    const cachedLessons =localStorage.getItem("lessons")
-    if(cachedLessons){
-      setBigLessons(JSON.parse(cachedLessons))
-      toast.dismiss()
-    }else {
-
-      try {
-        toast.loading("Loading lesson", {
-          autoClose: false,
-        });
-        const start = await axios.get(url, config);
-        console.log(JSON.stringify(start.data,null,2));
-        
-        setBigLessons(start.data);
-        localStorage.setItem("lessons",JSON.stringify(start.data,null,2))
-        setActiveBigLesson(bigLessons[0]);
-        toast.dismiss();
   
-        toast.success("Lessons loaded");
-      } catch (error: any) {
-        toast.error(
-          error.response?.data.message || error.response || "Network Error"
-        );
-        setTimeout(() => toast.dismiss, 2000);
-        // setTimeout(() => getLessons(url, config), 3000);
-      }
-    }
-  };
-  const getQuiz = async (url: string, config: any) => {
-    const cachedQuizzes = localStorage.getItem("quizzes")
-    if(cachedQuizzes){
-      setQuizzes(JSON.parse(cachedQuizzes))
-    }else{
-
-      try {
-        toast.loading("Loading quizzes", {
-          autoClose: false,
-        });
-        const start = await axios.get(url, config);
-        
-        setQuizzes(start.data);
-        localStorage.setItem("quizzes",JSON.stringify(start.data,null,2))
-        toast.dismiss();
-        toast.success("Quizzes loaded");
-      } catch (error: any) {
-        toast.error(
-          error.response?.data.message || error.response || "Network Error"
-        );
-        setTimeout(() => toast.dismiss, 2000);
-        // setTimeout(() => getQuiz(url, config), 1000);
-      }
-    }
-  };
   const [bigLessons, setBigLessons] = useState<Lesson[]>([]);
   const [activeBigLesson, setActiveBigLesson] = useState<Lesson>();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [isTakingQuiz, setIsTakingQuiz] = useState(false);
-  // const [activeQuiz,setActiveQuiz] = useState()
+  const [isWatchingVideo, setIsWatchingVideo] = useState<boolean>(false);
+  // const [isDoneWatchingVideo,setIsDoneWatchingVideo] = useState<boolean>(false)
   const [quizIndex, setQuizIndex] = useState<number>(0);
   const [quizCompleted, setQuizCompleted] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -132,12 +82,65 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     const quizUrl = baseUrl + `qa/${params.id}`;
     const token = localStorage.getItem("user-token");
     const config = { headers: { Authorization: `Bearer ${token}` } };
+    const getLessons = async (url: string, config: any) => {
+      const cachedLessons = localStorage.getItem("lessons");
+      if (cachedLessons) {
+        setBigLessons(JSON.parse(cachedLessons));
+        toast.dismiss();
+      } else {
+        try {
+          toast.loading("Loading lesson", {
+            autoClose: false,
+          });
+          const start = await axios.get(url, config);
+          console.log(JSON.stringify(start.data, null, 2));
+  
+          setBigLessons(start.data);
+          localStorage.setItem("lessons", JSON.stringify(start.data, null, 2));
+          // setActiveBigLesson(bigLessons[0]);
+          toast.dismiss();
+  
+          toast.success("Lessons loaded");
+          toast.info("Select a lesson to begin")
+        } catch (error: any) {
+          toast.error(
+            error.response?.data.message || error.response || "Network Error"
+          );
+          setTimeout(() => toast.dismiss, 2000);
+          // setTimeout(() => getLessons(url, config), 3000);
+        }
+      }
+    };
+    const getQuiz = async (url: string, config: any) => {
+      const cachedQuizzes = localStorage.getItem("quizzes");
+      if (cachedQuizzes) {
+        setQuizzes(JSON.parse(cachedQuizzes));
+      } else {
+        try {
+          toast.loading("Loading quizzes", {
+            autoClose: false,
+          });
+          const start = await axios.get(url, config);
+  
+          setQuizzes(start.data);
+          localStorage.setItem("quizzes", JSON.stringify(start.data, null, 2));
+          toast.dismiss();
+          toast.success("Quizzes loaded");
+        } catch (error: any) {
+          toast.error(
+            error.response?.data.message || error.response || "Network Error"
+          );
+          setTimeout(() => toast.dismiss, 2000);
+          // setTimeout(() => getQuiz(url, config), 1000);
+        }
+      }
+    };
+
     getLessons(startUrl, config);
     getQuiz(quizUrl, config);
-  }, []);
-  // if (quizCompleted && activeBigLesson) {
-  //   updateProgress();
-  // }
+    console.log("useEffect")
+  }, [params.id]);
+
 
   function getNextLesson() {
     setCurrentIndex(currentIndex - 1);
@@ -147,6 +150,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     setCurrentIndex(currentIndex + 1);
   }
   const activeLesson = activeBigLesson?.lessons[currentIndex];
+  // console.log(activeLesson)
   const activeQuiz: Quiz = quizzes[quizIndex];
   // console.log("aaaaaaaaaaaaaaaaaaaa",quizIndex)
 
@@ -169,6 +173,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       }
     } else {
       setCurrentIndex(currentIndex - 1);
+      setIsWatchingVideo(false)
     }
     // setActiveLesson(activeBigLesson.lessons[currentIndex-1])
   };
@@ -177,10 +182,12 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     // setActiveLesson(activeBigLesson.lessons[currentIndex+1])
   };
 
+  const watchVideo = () => {
+    setIsWatchingVideo(true);
+  };
+
   const takeQuiz = () => {
     setIsTakingQuiz(true);
-    // setAnswer(activeQuiz.correctOption)
-    // setActiveQuiz(activeQuiz)
   };
 
   const goToNextQuestion = () => {
@@ -197,6 +204,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       }
       setIsTakingQuiz(false);
       setQuizCompleted(true);
+      updateProgress();
+      
     }
   };
 
@@ -218,9 +227,17 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         }
         setIsTakingQuiz(false);
         setQuizCompleted(true);
+        updateProgress();
+        setIsWatchingVideo(false)
       }
     }, 1000);
   };
+
+  const simulate = ()=> {
+    setCurrentIndex(0)
+    setIsTakingQuiz(false)
+    setQuizCompleted(false)
+  }
 
   const Option = ({ option }: { option: string }) => {
     const getColor = () => {
@@ -247,7 +264,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         className={` mx-auto hover:bg-yellow-500
 
       ${getColor()}
-      flex justify-center items-center rounded-[96px] text-2xl font-bold w-[400px] h-[93px] transition-all cursor-pointer hover:scale-110 hover:text-white`}
+      flex justify-center items-center rounded-[96px] text-2xl font-bold w-[300px] min-h-[65px] transition-all cursor-pointer hover:scale-110 hover:text-white`}
       >
         {option}
       </div>
@@ -257,14 +274,15 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const LessonContent = () => {
     return (
       <section
-        className={`relative bg-[#662C91] flex gap-8 text-white  rounded-[90px] bg-no-repeat  overflow-clip items-center justify-center ${
-          activeLesson?.images[0].avatar
-            ? "pr-8 bg-[#662C91]  bg-[url('/lessonBgRobot.svg')] bg-right grid-cols-2"
-            : "p-32 flex bg-black bg-[url('/noimgbg.svg')] bg-cover text-center"
+        className={`relative max-h-[380px] 2xl:max-h-full bg-[#662C91] grid min-h-[300px] min-w-[850px] gap-8 text-white  rounded-[90px] bg-no-repeat  overflow-clip items-center justify-center ${
+          isWatchingVideo && !isTakingQuiz ? "  self-center ":
+          activeLesson?.images[0].avatar 
+            ? "pr-8 bg-[#662C91]  bg-[url('/lessonBgRobot.svg')] bg-right grid-cols-[4fr,6fr]"
+            : "p-[5%] flex bg-black bg-[url('/noimgbg.svg')] bg-cover text-center w-full h-full "
         }`}
       >
         {isTakingQuiz && !quizCompleted ? (
-          <div className="flex flex-col gap-12 p-16 col-span-2 text-center">
+          <div className="flex flex-col gap-12 p-8 2xl:p-16 col-span-2 text-center">
             <h1 className="text-7xl font-bold">Q{quizIndex + 1}</h1>
             <h1 className="text-3xl">{activeQuiz.question}</h1>
             <div className="flex flex-wrap gap-4 items-center justify-center">
@@ -276,7 +294,16 @@ const Lesson = ({ params }: { params: { id: number } }) => {
                 )}
             </div>
           </div>
-        ) : !isTakingQuiz && quizCompleted ? (
+        ) : isWatchingVideo && activeBigLesson?.video && !quizCompleted ?(
+          // <div className="m-0 w-full h-full">
+
+          <video className=" object-fill bg-black" autoPlay loop controls>
+          <source src={activeBigLesson.video || "https://drive.google.com/uc?id=1IAYD5J-VIXwAslaGQgt4ClVWoilegMm8/"} type="video/mp4"/>
+Your browser does not support the video tag.
+</video>
+          // </div>
+          // <video src={activeBigLesson?.video || "https://drive.google.com/file/d/1IAYD5J-VIXwAslaGQgt4ClVWoilegMm8/view?usp=drive_link"}/> 
+        ): !isTakingQuiz && quizCompleted ? (
           <>
             <div className=" col-span-2 ">
               <h1 className="text-center  text-7xl">Quiz Completed</h1>
@@ -284,7 +311,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
           </>
         ) : (
           <>
-            <div className="h-full w-[40%]">
+          {activeLesson?.images[0].avatar && 
+            <div className="h-full w-full">
               {activeLesson?.images[0].avatar && (
                 <div className="flex items-center w-full h-full">
                   <Image
@@ -306,7 +334,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
                 </div>
               )}
             </div>
-            <div className="text-left z-10 w-[60%]">
+          }
+            <div className="text-left z-10 w-full">
               <h1 className="text-[2rem] font-bold">{activeLesson?.title}</h1>
               <p
                 className={` ${
@@ -337,30 +366,45 @@ const Lesson = ({ params }: { params: { id: number } }) => {
               <Button onClick={goToNext} disabled={isTakingQuiz}>
                 Next
               </Button>
-            ) : currentIndex === activeBigLesson.lessons.length - 1 && 
-              quizzes &&
-              !isTakingQuiz ? (
-              <Button onClick={takeQuiz}>Take Quiz</Button>
-            ) : isTakingQuiz ? (
-              !selectedOption ? (
-                <Button disabled={Boolean(!answer)} onClick={goToNextQuestion}>
-                  Next Question
+            ) : currentIndex === activeBigLesson.lessons.length - 1 ? (
+              activeBigLesson?.video && !isWatchingVideo? (
+                <Button onClick={watchVideo} disabled={isTakingQuiz}>
+                  Watch Video
                 </Button>
-              ) : (
-                !quizCompleted && (
+              ) : quizzes ? (
+                !isTakingQuiz ? (
+                  <Button onClick={takeQuiz}>Take Quiz</Button>
+                ) : selectedOption ? (
                   <Button disabled={Boolean(answer)} onClick={checkQuizAnswer}>
                     Check Answer
                   </Button>
+                ) : (
+                  <Button
+                    disabled={Boolean(!answer)}
+                    onClick={goToNextQuestion}
+                  >
+                    Next Question
+                  </Button>
                 )
+              ) : (
+                //  if there are no quizes
+                <Link
+                  href={"https://robolabssimulation.vercel.app/"}
+                  onClick={() => localStorage.removeItem("module-data")}
+                >
+                  <Button>Go To Simulation</Button>
+                </Link>
               )
             ) : (
+              // if lesson not ended
               <Link
-                href={"https://robolabssimulation.vercel.app/"}
-                onClick={() => localStorage.removeItem("module-data")}
-              >
-                <Button>Go To Simulation</Button>
-              </Link>
+              href={"https://robolabssimulation.vercel.app/"} target="_blank"
+              onClick={() => localStorage.removeItem("module-data")}
+            >
+              <Button onClick={simulate}>Go To Simulation</Button>
+            </Link>
             ))}
+
         </div>
       </div>
     );
@@ -368,7 +412,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
 
   return (
     <>
-      <main className=" bg-purple bg-[url('/adinkra.svg')] min-h-screen overflow-clip scroll  bg-blend-overlay">
+      <main className=" bg-purple bg-[url('/adinkra.svg')] h-screen overflow-clip  bg-blend-overlay">
         <header className=" p-5 flex justify-between items-center">
           <Image src="/logo2.svg" alt="logo" width={200} height={20} />
           <h1 className="text-3xl font-extrabold">Introduction to RoboLabs</h1>
@@ -379,13 +423,13 @@ const Lesson = ({ params }: { params: { id: number } }) => {
             </div>
           </div>
         </header>
-        <section className="flex min-h-[calc(100vh-5rem)]  text-white">
-          <aside className="min-w-[200px] h-full  pb-10 w-[30%] flex flex-col gap-4 items-center">
+        <section className="flex min-h-[calc(100vh-5rem)] w-screen text-white">
+          <aside className="min-w-[200px] pb-10 w-[30%] flex flex-col gap-4  items-center justify-between">
             <div className="flex flex-col h-full gap-4 w-full items-center m-0">
               <Image
                 src="/lessonsRobot.svg"
-                height={300}
-                width={300}
+                height={200}
+                width={200}
                 alt="lessons Robot"
               />
               {/* <ul className="flex flex-col gap-8"> */}
@@ -394,11 +438,11 @@ const Lesson = ({ params }: { params: { id: number } }) => {
                 <button
                   disabled={isTakingQuiz || Boolean(activeBigLesson)}
                   key={index}
-                  className={`${
+                  className={`${isTakingQuiz || (activeBigLesson && activeBigLesson?.subject!==lesson.subject)? "text-gray-800":
                     lesson.subject === activeBigLesson?.subject
                       ? "text-purple bg-white rounded-l-[25px]"
                       : ""
-                  } p-4 h-[70px] w-full -mr-4 border-transparent cursor-pointer text-2xl text-left font-bold `}
+                  } p-4  w-full ml-8 border-transparent cursor-pointer text-2xl text-left font-bold `}
                   onClick={() => {
                     setActiveBigLesson(lesson);
                     setCurrentIndex(0);
@@ -414,7 +458,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
               Go To Dashboard
             </Button>
           </aside>
-          <main className="w-full min-h-full max-h-fit p-16 bg-white grid grid-rows-[auto,auto] gap-16 ">
+          <main className="w-full min-h-full max-h-fit p-16 bg-white grid grid-rows-[auto,auto] justify-center gap-16 ">
             <LessonContent />
             <LessonButtons />
           </main>
