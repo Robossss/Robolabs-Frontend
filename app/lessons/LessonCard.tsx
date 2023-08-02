@@ -41,7 +41,7 @@ const LessonCard = ({ ...data }) => {
     }
   };
 
-  // const progress:string = ``
+  const progress:number = Math.round(data.progress)
   // console.log(progress)
   return (
     <div className="text-white h-[320px] bg-purple w-[90%] max-w-[1280px] rounded-[50px] shadow-x mx-auto p-8 grid grid-cols-2 gap-8">
@@ -53,10 +53,10 @@ const LessonCard = ({ ...data }) => {
         </h1>
         {data.progressType && (
           <>
-            <p className="text-2xl font-bold">{data.progress}% completed</p>
+            <p className="text-2xl font-bold">{progress}% completed</p>
             <div className="h-2 bg-white w-1/2 rounded-xl">
               {data.progress ? (
-                <div className={`  h-2 bg-[#D87F60] rounded-xl ${data.progress ? `w-[${data.progress}%]` : "w-[33%]"}`}> </div>
+                <div className={`  h-2 bg-[#D87F60] rounded-xl ${data.progress ? `w-[${progress}%]` : "w-[10%]"}`}> </div>
               ) : (
                 ""
               )}
