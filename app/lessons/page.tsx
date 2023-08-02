@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { Module } from "module";
 import { useRouter } from "next/navigation";
 import { boolean } from "zod";
+import { features } from "process";
 
 export type Module = {
   _id: number;
@@ -18,8 +19,7 @@ export type Module = {
 const Lessons = () => {
   const router = useRouter();
   const [data, setData] = useState<{ progress: []; modules: Module[] }>();
-  const sections = ["featured", "in progress", "completed"];
-  const [activeSection, setActiveSection] = useState(data?.progress ?sections[1]:sections[0]);
+  
 
   useEffect(() => {
     const getModules = async (url: string, config: any) => {
@@ -39,7 +39,7 @@ const Lessons = () => {
         } catch (error: any) {
           toast.error(error.response?.data.message || error.message);
           console.log(error.response?.data.message || error.message);
-          setTimeout(() => getModules(url, config), 10000);
+          // setTimeout(() => getModules(url, config), 10000);
         }
       }
       setTimeout(() => toast.dismiss(), 3000);
@@ -58,12 +58,14 @@ const Lessons = () => {
     setTimeout(() => toast.dismiss(), 3000);
     console.log("useEffect");
     
-  }, []);
+  },[]);
 
-  const [username, setUsername] = useState("Jon Doe");
-  const [role, setRole] = useState("student");
 
   let modules;
+  const sections = ["featured", "in progress", "completed"];
+  const [activeSection, setActiveSection] = useState(sections[1]);
+
+
   if (activeSection === "featured") {
     modules = data?.modules;
   } else if (activeSection === "in progress") {
@@ -74,6 +76,13 @@ const Lessons = () => {
   }
   // console.log(activeSection)
 
+
+
+
+  const [username, setUsername] = useState("Jon Doe");
+  const [role, setRole] = useState("student");
+
+ 
   return (
     <>
       <main className="bg-white text-white min-h-screen ">

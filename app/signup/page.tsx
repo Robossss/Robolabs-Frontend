@@ -70,7 +70,7 @@ const SignUp = () => {
     } catch (error:any) {
       toast.error(error.response?.data.message  || error.response || "Network Error");
       setTimeout(() => toast.dismiss, 2000);
-      setTimeout(() => submitData(data), 3000);
+      // setTimeout(() => submitData(data), 3000);
     }
     
   };

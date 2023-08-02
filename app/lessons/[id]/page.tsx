@@ -38,17 +38,17 @@ type Quiz = {
 const Lesson = ({ params }: { params: { id: number } }) => {
   const router = useRouter();
 
-  const updateProgress = async () => {
+  const updateProgress = async (setProgress?:number) => {
     // console.log(bigLessons.indexOf(activeBigLesson));
     const updateId = localStorage.getItem("progress-id");
-    const progress: number =
+    const progress: number = setProgress ??
       ((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100;
     // console.log(bigLessons.indexOf(activeBigLesson!), activeBigLesson);
     try {
       const url = baseUrl + `progress/${updateId}`;
       const body = {
-        progress: progress.toFixed(2),
-        level: updateId,
+        progress: Math.round(progress),
+        level: module.id,
       };
       const token = localStorage.getItem("user-token");
       // console.log(body, token);
@@ -56,7 +56,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       const update = await axios.put(url, body, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // console.log(update);
+      console.log(update);
     } catch (error: any) {
       toast.error(error.response.data.message);
       console.log(error.response.data.message);
@@ -171,9 +171,11 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       } else {
         setIsTakingQuiz(false);
       }
-    } else {
+    } else if(currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
-      setIsWatchingVideo(false)
+      if(isWatchingVideo){
+        setIsWatchingVideo(false)
+      }
     }
     // setActiveLesson(activeBigLesson.lessons[currentIndex-1])
   };
@@ -251,7 +253,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   };
 
   const simulate = ()=> {
-    updateProgress()
+    updateProgress(100)
     toast.success("Lessons Completed")
     localStorage.removeItem("module-data")
     router.push('/lessons')
@@ -296,7 +298,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const LessonContent = () => {
     return (
       <section
-        className={`relative max-h-[380px] 2xl:max-h-full bg-[#662C91] grid min-h-[300px] min-w-[850px] gap-8 text-white  rounded-[90px] bg-no-repeat  overflow-clip items-center justify-center ${
+        className={`relative max-h-[250px] lg:max-h-[380px] 2xl:max-h-[460px] bg-[#662C91] grid min-h-[300px] min-w-[850px] gap-8 text-white bg-no-repeat  overflow-hidden items-center ${!isWatchingVideo && "justify-center rounded-[90px]"} ${
           isWatchingVideo && !isTakingQuiz ? "  self-center ":
           activeLesson?.images[0].avatar 
             ? "pr-8 bg-[#662C91]  bg-[url('/lessonBgRobot.svg')] bg-right grid-cols-[4fr,6fr]"
@@ -317,13 +319,13 @@ const Lesson = ({ params }: { params: { id: number } }) => {
             </div>
           </div>
         ) : isWatchingVideo && activeBigLesson?.video && !quizCompleted ?(
-          // <div className="m-0 w-full h-full">
+          <div className="m-0 min-w-full min-h-full bg-white">
 
-          <video className=" object-fill bg-black" autoPlay loop controls>
+          <video className=" object-cover w-full h-full " autoPlay loop controls>
           <source src={activeBigLesson.video || "https://drive.google.com/uc?id=1IAYD5J-VIXwAslaGQgt4ClVWoilegMm8/"} type="video/mp4"/>
 Your browser does not support the video tag.
 </video>
-          // </div>
+          </div>
           // <video src={activeBigLesson?.video || "https://drive.google.com/file/d/1IAYD5J-VIXwAslaGQgt4ClVWoilegMm8/view?usp=drive_link"}/> 
         ): !isTakingQuiz && quizCompleted ? (
           <>
@@ -357,7 +359,7 @@ Your browser does not support the video tag.
               )}
             </div>
           }
-            <div className="text-left z-10 w-full">
+            <div className="text-left w-full flex flex-col justify-center">
               <h1 className="text-[2rem] font-bold">{activeLesson?.title}</h1>
               <p
                 className={` ${

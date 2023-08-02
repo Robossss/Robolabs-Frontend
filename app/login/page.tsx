@@ -63,13 +63,13 @@ const Login = () => {
     } catch (error: any) {
       toast.error(error.response?.data.message  || error.response || "Network Error");
       setTimeout(() => toast.dismiss(), 5000);
-      setTimeout(() => submitData(userData), 5000);
+      // setTimeout(() => submitData(userData), 5000);
     }
   };
 
   return (<>
 {/* <ToastContainer theme="dark" /> */}
-    <main className=" h-screen  bg-purple bg-[url('/loginFlower.svg')]  bg-contain bg-left-top bg-no-repeat ">
+    <main className=" h-screen  bg-purple bg-[url('/loginFlower.svg')] flex flex-col items-center justify-between overflow-clip  bg-contain bg-left-top bg-no-repeat ">
 <Header/>
 <section className="flex justify-center items-center">
 
@@ -77,7 +77,7 @@ const Login = () => {
         <div className="flex items-center justify-center">
         <Image className="self-center" src="/loginImage.svg" width={836} height={856} alt=""/>
         </div>
-      <section className=" py-14 px-20 flex flex-col items-center justify-center gap-4">
+      <section className=" px-20 flex flex-col items-center justify-center gap-4">
         <Image src="/logo1.svg" height={130} width={170} alt="logo" />
         <h1 className="text-2xl mb-7 text-white font-bold">
           Welcome to RoboLabs
