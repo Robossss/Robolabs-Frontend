@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Lessons from "../page";
 
 type Lesson = {
   _id: string;
@@ -35,27 +36,29 @@ type Quiz = {
   __v: 0;
 };
 
-const videoLinks =[
+const videoLinks = [
   "https://drive.google.com/uc?id=1IAYD5J-VIXwAslaGQgt4ClVWoilegMm8",
-  "https://drive.google.com/uc?id=1mSU5QoOSfjkGv1Jnvhey-lZGM3f9tkzR"
-]
+  "https://drive.google.com/uc?id=1mSU5QoOSfjkGv1Jnvhey-lZGM3f9tkzR",
+  "https://drive.google.com/uc?id=1mSU5QoOSfjkGv1Jnvhey-lZGM3f9tkzR",
+];
 
 const Lesson = ({ params }: { params: { id: number } }) => {
   const router = useRouter();
 
-  const updateProgress = async (setProgress?:number) => {
+  const updateProgress = async (setProgress?: number) => {
     // console.log(bigLessons.indexOf(activeBigLesson));
-    toast.dismiss()
+    toast.dismiss();
     const updateId = localStorage.getItem("progress-id");
-    const progress: number = setProgress ??
-      (((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100);
+    const progress: number =
+      setProgress ??
+      ((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100;
     try {
       const url = baseUrl + `progress/${params.id}`;
       const body = {
         progress: Math.round(progress),
         level: updateId,
       };
-      console.log(body)
+      console.log(body);
       const token = localStorage.getItem("user-token");
       // console.log(body, token);
       // console.log(body);
@@ -63,17 +66,20 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log(update);
-      localStorage.removeItem("module-data")
+      localStorage.removeItem("module-data");
     } catch (error: any) {
-      toast.error(error.response?.data.message || error.response || "Network Error");
-      console.log(error.response?.data.message || error.response || "Network Error");
+      toast.error(
+        error.response?.data.message || error.response || "Network Error"
+      );
+      console.log(
+        error.response?.data.message || error.response || "Network Error"
+      );
       setTimeout(() => toast.dismiss, 2000);
 
       // updateProgress()
     }
   };
 
-  
   const [bigLessons, setBigLessons] = useState<Lesson[]>([]);
   const [activeBigLesson, setActiveBigLesson] = useState<Lesson>();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -85,7 +91,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   useEffect(() => {
-    toast.dismiss()
+    toast.dismiss();
     const startUrl = baseUrl + `lesson/${params.id}`;
     const quizUrl = baseUrl + `qa/${params.id}`;
     const token = localStorage.getItem("user-token");
@@ -95,7 +101,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       if (cachedLessons) {
         setBigLessons(JSON.parse(cachedLessons));
         setActiveBigLesson(JSON.parse(cachedLessons)[0]);
-        setCurrentIndex(0)
+        setCurrentIndex(0);
         toast.dismiss();
       } else {
         try {
@@ -104,14 +110,14 @@ const Lesson = ({ params }: { params: { id: number } }) => {
           });
           const start = await axios.get(url, config);
           console.log(JSON.stringify(start.data, null, 2));
-  
+
           setBigLessons(start.data);
           localStorage.setItem("lessons", JSON.stringify(start.data, null, 2));
           setActiveBigLesson(start.data[0]);
-          setCurrentIndex(0)
+          setCurrentIndex(0);
           toast.dismiss();
           toast.success("Lessons loaded");
-          toast.info("Select a lesson to begin")
+          toast.info("Select a lesson to begin");
         } catch (error: any) {
           toast.error(
             error.response?.data.message || error.response || "Network Error"
@@ -131,7 +137,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
             autoClose: false,
           });
           const start = await axios.get(url, config);
-  
+
           setQuizzes(start.data);
           localStorage.setItem("quizzes", JSON.stringify(start.data, null, 2));
           toast.dismiss();
@@ -148,9 +154,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
 
     getLessons(startUrl, config);
     getQuiz(quizUrl, config);
-    console.log("useEffect")
+    console.log("useEffect");
   }, [params.id]);
-
 
   function getNextLesson() {
     setCurrentIndex(currentIndex - 1);
@@ -181,31 +186,31 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       } else {
         setIsTakingQuiz(false);
       }
-    } else if(currentIndex > 0) {
-      if(isWatchingVideo){
-        setIsWatchingVideo(false)
-      }else{
+    } else if (currentIndex > 0) {
+      if (isWatchingVideo) {
+        setIsWatchingVideo(false);
+      } else {
         setCurrentIndex(currentIndex - 1);
       }
     }
     // setActiveLesson(activeBigLesson.lessons[currentIndex-1])
   };
   const goToNext = () => {
-    
     if(currentIndex===activeBigLesson!.lessons.length-1){
-      updateProgress(10);
-
+      updateProgress();
       if (
         activeBigLesson &&
         bigLessons.indexOf(activeBigLesson) < bigLessons.length - 1
       ) {
-        if(isWatchingVideo){
-          setIsWatchingVideo(false)
-        }
-        setActiveBigLesson( bigLessons[bigLessons.indexOf(activeBigLesson)+1])
         if(!quizCompleted){
           setCurrentIndex(0)
         }
+        if(activeBigLesson.video && isWatchingVideo){
+
+          setIsWatchingVideo(false)
+        }
+        setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson) + 1]);
+        setCurrentIndex(0)
       }else {
         setIsTakingQuiz(true)
       }
@@ -215,9 +220,11 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     // setActiveLesson(activeBigLesson.lessons[currentIndex+1])
   };
 
+
+
   const watchVideo = () => {
     setIsWatchingVideo(true);
-    setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson!) + 1])
+    setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson!) + 1]);
   };
 
   const takeQuiz = () => {
@@ -232,15 +239,13 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     } else {
       if (
         activeBigLesson &&
-        bigLessons.indexOf(activeBigLesson) + 1 < bigLessons.length - 1
+        bigLessons.indexOf(activeBigLesson) < bigLessons.length - 1
       ) {
-        
         setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson) + 1]);
       }
       setIsTakingQuiz(false);
       setQuizCompleted(true);
       updateProgress();
-      
     }
   };
 
@@ -254,7 +259,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       } else {
         if (
           activeBigLesson &&
-          bigLessons.indexOf(activeBigLesson) + 1 < bigLessons.length - 1
+          bigLessons.indexOf(activeBigLesson)  < bigLessons.length - 1
         ) {
           setActiveBigLesson(
             bigLessons[bigLessons.indexOf(activeBigLesson) + 1]
@@ -263,23 +268,21 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         setIsTakingQuiz(false);
         setQuizCompleted(true);
         updateProgress();
-        setIsWatchingVideo(false)
+        setIsWatchingVideo(false);
       }
     }, 1000);
   };
 
-  const simulate = ()=> {
-
-    updateProgress(100)
-    toast.success("Lessons Completed")
-    localStorage.removeItem("module-data")
-    setTimeout(()=>router.push('/lessons'),4000
-    )
+  const simulate = () => {
+    updateProgress(100);
+    toast.success("Lessons Completed");
+    localStorage.removeItem("module-data");
+    setTimeout(() => router.push("/lessons"), 4000);
 
     // setCurrentIndex(0)
     // setIsTakingQuiz(false)
     // setQuizCompleted(false)
-  }
+  };
 
   const Option = ({ option }: { option: string }) => {
     const getColor = () => {
@@ -316,80 +319,92 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   const LessonContent = () => {
     return (
       <section
-        className={`relative max-h-[250px] lg:max-h-[380px] 2xl:max-h-[460px] bg-[#662C91] shadow-x grid min-h-[300px] min-w-[850px] gap-8 text-white bg-no-repeat  overflow-hidden items-center ${!isWatchingVideo && "justify-center rounded-[90px]"} ${
-          isWatchingVideo && !isTakingQuiz ? "  self-center ":
-          activeLesson?.images[0].avatar 
+        className={`relative max-h-[250px] lg:max-h-[380px] 2xl:max-h-[460px] bg-[#662C91] shadow-x grid min-h-[300px] min-w-[850px] gap-8 text-white bg-no-repeat  overflow-hidden items-center ${
+          !isWatchingVideo && "justify-center rounded-[90px]"
+        } ${
+          isWatchingVideo && !isTakingQuiz
+            ? "  self-center "
+            : activeLesson?.images[0].avatar
             ? "pr-8 bg-[#662C91]  bg-[url('/lessonBgRobot.svg')] bg-right grid-cols-[4fr,6fr]"
             : "p-[5%] flex bg-black bg-[url('/noimgbg.svg')] bg-cover text-center w-full h-full "
         }`}
       >
-        {activeBigLesson ?((isTakingQuiz && !quizCompleted) ? (
-          <div className="flex flex-col gap-12 p-8 2xl:p-16 col-span-2 text-center">
-            <h1 className="text-7xl font-bold">Q{quizIndex + 1}</h1>
-            <h1 className="text-3xl">{activeQuiz.question}</h1>
-            <div className="flex flex-wrap gap-4 items-center justify-center">
-              {activeQuiz.options &&
-                activeQuiz.options.map(
-                  ({ option, _id }: { option: string; _id: number }) => (
-                    <Option key={_id} option={option} />
-                  )
-                )}
+        {activeBigLesson ? (
+          isTakingQuiz && !quizCompleted ? (
+            <div className="flex flex-col gap-12 p-8 2xl:p-16 col-span-2 text-center">
+              <h1 className="text-7xl font-bold">Q{quizIndex + 1}</h1>
+              <h1 className="text-3xl">{activeQuiz.question}</h1>
+              <div className="flex flex-wrap gap-4 items-center justify-center">
+                {activeQuiz.options &&
+                  activeQuiz.options.map(
+                    ({ option, _id }: { option: string; _id: number }) => (
+                      <Option key={_id} option={option} />
+                    )
+                  )}
+              </div>
             </div>
-          </div>
-        ) : isWatchingVideo && activeBigLesson?.video && !quizCompleted ?(
-          <div className="m-0 min-w-full min-h-full bg-white">
-
-          <video className=" object-cover w-full h-full " autoPlay loop controls>
-          <source src={videoLinks[bigLessons.indexOf(activeBigLesson)]} type="video/mp4"/>
-Your browser does not support the video tag.
-</video>
-          </div>
-          // <video src={activeBigLesson?.video || "https://drive.google.com/file/d/1IAYD5J-VIXwAslaGQgt4ClVWoilegMm8/view?usp=drive_link"}/> 
-        ): !isTakingQuiz && quizCompleted ? (
-          <>
-            <div className=" col-span-2 ">
-              <h1 className="text-center  text-7xl">Quiz Completed</h1>
+          ) : isWatchingVideo && activeBigLesson?.video && !quizCompleted ? (
+            <div className="m-0 min-w-full min-h-full bg-white">
+              <video
+                className=" object-cover w-full h-full "
+                autoPlay
+                loop
+                controls
+              >
+                <source
+                  src={videoLinks[bigLessons.indexOf(activeBigLesson)]}
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
             </div>
-          </>
-        ) : (
-          <>
-          {activeLesson?.images[0].avatar && 
-            <div className="h-full w-full">
+          ) : // <video src={activeBigLesson?.video || "https://drive.google.com/file/d/1IAYD5J-VIXwAslaGQgt4ClVWoilegMm8/view?usp=drive_link"}/>
+          !isTakingQuiz && quizCompleted ? (
+            <>
+              <div className=" col-span-2 ">
+                <h1 className="text-center  text-7xl">Quiz Completed</h1>
+              </div>
+            </>
+          ) : (
+            <>
               {activeLesson?.images[0].avatar && (
-                <div className="flex items-center justify-center w-full h-full">
-                  <Image
-                    className="absolute top-[5%] right-[5%]"
-                    height={40}
-                    width={40}
-                    src="/lightBulb.svg"
-                    alt="light bulb"
-                  />
-                  <div className="min-w-[150px] h-full  ">
-                    <Image
-                      src={activeLesson?.images[0].avatar}
-                      height={4000}
-                      width={4000}
-                      style={{objectFit:"cover"}}
-                      alt="lesson image"
-                      className="w-full h-full"
-                    />
-                  </div>
+                <div className="h-full w-full">
+                  {activeLesson?.images[0].avatar && (
+                    <div className="flex items-center justify-center w-full h-full">
+                      <Image
+                        className="absolute top-[5%] right-[5%]"
+                        height={40}
+                        width={40}
+                        src="/lightBulb.svg"
+                        alt="light bulb"
+                      />
+                      <div className="min-w-[150px] h-full  ">
+                        <Image
+                          src={activeLesson?.images[0].avatar}
+                          height={4000}
+                          width={4000}
+                          style={{ objectFit: "cover" }}
+                          alt="lesson image"
+                          className="w-full h-full"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
-          }
-            <div className="text-left w-full flex flex-col justify-center">
-              <h1 className="text-[2rem] font-bold">{activeLesson?.title}</h1>
-              <p
-                className={` ${
-                  activeLesson?.images[0].avatar || "text-center text-2xl"
-                } `}
-              >
-                {activeLesson?.content}
-              </p>
-            </div>
-          </>
-        )):(
+              <div className="text-left w-full flex flex-col justify-center">
+                <h1 className="text-[2rem] font-bold">{activeLesson?.title}</h1>
+                <p
+                  className={` ${
+                    activeLesson?.images[0].avatar || "text-center text-2xl"
+                  } `}
+                >
+                  {activeLesson?.content}
+                </p>
+              </div>
+            </>
+          )
+        ) : (
           <h1>Lessons Loading</h1>
         )}
       </section>
@@ -405,35 +420,44 @@ Your browser does not support the video tag.
           )}
         </div>
         <div className="">
-          {
-            activeBigLesson && ((bigLessons.indexOf(activeBigLesson)!== bigLessons.length-1)?(
-              currentIndex!==activeBigLesson.lessons.length-1?(<Button onClick={goToNext} disabled={isTakingQuiz}>
-                Next
-              </Button>):(activeBigLesson.video && !isWatchingVideo?(                <Button onClick={watchVideo} disabled={isTakingQuiz}>
-                Watch Video
-              </Button>):
+          {activeBigLesson &&
+            (bigLessons.indexOf(activeBigLesson) !== bigLessons.length - 1 || bigLessons.length ===1 ? (
+              currentIndex !== activeBigLesson.lessons.length - 1 ? (
+                <Button onClick={goToNext} disabled={isTakingQuiz}>
+                  Next
+                </Button>
+              ) : activeBigLesson.video && !isWatchingVideo ? (
+                <Button onClick={watchVideo} disabled={isTakingQuiz}>
+                  Watch Video
+                </Button>
+              ) : ( 
+                <Button onClick={goToNext} disabled={isTakingQuiz}>
+                  Next
+                </Button>
+              )
+            ) : quizzes &&
+              !quizCompleted &&
+              currentIndex === activeBigLesson?.lessons.length - 1 ? (
+              quizzes.length > 0 && !isTakingQuiz ? (
+                <Button onClick={takeQuiz}>Take Quiz</Button>
+              ) : (
+                <Button disabled={!selectedOption} onClick={checkQuizAnswer}>
+                  Check Answer
+                </Button>
+              )
+            ) : currentIndex !== activeBigLesson.lessons.length - 1 ? (
               <Button onClick={goToNext} disabled={isTakingQuiz}>
                 Next
-              </Button>)
-              
-            ):(
-              quizzes.length >0 && !quizCompleted  && currentIndex===activeBigLesson?.lessons.length-1 ?(!isTakingQuiz ?
-                (<Button onClick={takeQuiz}>Take Quiz</Button>):(                  <Button disabled={!selectedOption} onClick={checkQuizAnswer}>
-                Check Answer
-              </Button>)
-              ):(    currentIndex !== activeBigLesson.lessons.length-1 && activeBigLesson!==bigLessons[bigLessons.length-1]?(<Button onClick={goToNext} disabled={isTakingQuiz}>
-                Next
-              </Button>):              <Link
+              </Button>
+            ) : (
+              <Link
                 href={"https://robolabssimulation.vercel.app/"}
                 target="_blank"
                 onClick={simulate}
               >
                 <Button>Go To Simulation</Button>
-              </Link>)
-                
-              
-            ))
-          }
+              </Link>
+            ))}
         </div>
       </div>
     );
@@ -467,8 +491,12 @@ Your browser does not support the video tag.
                 <button
                   disabled={isTakingQuiz || Boolean(activeBigLesson)}
                   key={index}
-                  className={`${isTakingQuiz || (activeBigLesson && activeBigLesson?.subject!==lesson.subject)? "text-gray-800":
-                    lesson.subject === activeBigLesson?.subject
+                  className={`${
+                    isTakingQuiz ||
+                    (activeBigLesson &&
+                      activeBigLesson?.subject !== lesson.subject)
+                      ? "text-gray-800"
+                      : lesson.subject === activeBigLesson?.subject
                       ? "text-purple bg-white rounded-l-[25px]"
                       : ""
                   } p-2  w-full ml-8 border-transparent cursor-pointer text-lg lg:p-4 lg:text-2xl text-left font-bold `}
