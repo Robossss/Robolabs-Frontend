@@ -25,6 +25,8 @@ const Lessons = () => {
     toast.dismiss()
     const getModules = async (url: string, config: any) => {
       const data = localStorage.getItem("module-data");
+      localStorage.removeItem("lessons")
+      localStorage.removeItem("quizzes")
       if (data) {
         setData(JSON.parse(data));
       } else {
@@ -130,19 +132,28 @@ const Lessons = () => {
               src="/lessonsRobot.svg"
               alt="lessons robot"
             />
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col gap-4 items-center">
               <Image
                 width={270}
                 height={270}
                 src="/personalRobot.svg"
                 alt="personal robot"
               />
+              <div className="text-center">
+
               <h1 className="text-5xl font-extrabold capitalize">
                 Hello {username}
               </h1>
               <p className="text-3xl font-semibold">
                 Welcome to Your Dashboard
               </p>
+              </div>
+              <Image
+                width={270}
+                height={270}
+                src="/analytics.svg"
+                alt="analytics"
+              />
             </div>
           </div>
         </section>

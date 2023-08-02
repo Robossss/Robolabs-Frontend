@@ -10,6 +10,7 @@ const LessonCard = ({ ...data }) => {
   let course: any
   if(data.level) {
     course = data.level
+    localStorage.removeItem("progress-id")
     localStorage.setItem("progress-id",data._id)
   }else {
     course = data
@@ -17,6 +18,7 @@ const LessonCard = ({ ...data }) => {
   // localStorage
   const router = useRouter();
   const createProgress = async () => {
+    localStorage.removeItem("module-data")
     const token = localStorage.getItem("user-token");
     try {
       const url = baseUrl + "progress/create";
@@ -26,8 +28,10 @@ const LessonCard = ({ ...data }) => {
       const start = await axios.post(url, body, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log(start)
     } catch (error: any) {
-      ()=>toast.error(error.response.data.message);
+      toast.error(error.response.data.message || error.response || "Network Error");
+      console.log(error.response.data.message || error.response || "Network Error");
     }
   };
 

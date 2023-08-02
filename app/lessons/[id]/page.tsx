@@ -35,6 +35,11 @@ type Quiz = {
   __v: 0;
 };
 
+const videoLinks =[
+  "https://drive.google.com/uc?id=1IAYD5J-VIXwAslaGQgt4ClVWoilegMm8",
+  "https://drive.google.com/uc?id=1mSU5QoOSfjkGv1Jnvhey-lZGM3f9tkzR"
+]
+
 const Lesson = ({ params }: { params: { id: number } }) => {
   const router = useRouter();
 
@@ -44,13 +49,13 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     const updateId = localStorage.getItem("progress-id");
     const progress: number = setProgress ??
       (((bigLessons.indexOf(activeBigLesson!) + 1) / bigLessons.length) * 100);
-      console.log(updateId,progress)
     try {
-      const url = baseUrl + `progress/${updateId}`;
+      const url = baseUrl + `progress/${params.id}`;
       const body = {
         progress: Math.round(progress),
-        level: module.id,
+        level: updateId,
       };
+      console.log(body)
       const token = localStorage.getItem("user-token");
       // console.log(body, token);
       // console.log(body);
@@ -60,8 +65,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       console.log(update);
       localStorage.removeItem("module-data")
     } catch (error: any) {
-      toast.error(error.response.data.message);
-      console.log(error.response.data.message);
+      toast.error(error.response?.data.message || error.response || "Network Error");
+      console.log(error.response?.data.message || error.response || "Network Error");
       setTimeout(() => toast.dismiss, 2000);
 
       // updateProgress()
@@ -90,6 +95,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
       if (cachedLessons) {
         setBigLessons(JSON.parse(cachedLessons));
         setActiveBigLesson(JSON.parse(cachedLessons)[0]);
+        setCurrentIndex(0)
         toast.dismiss();
       } else {
         try {
@@ -102,9 +108,8 @@ const Lesson = ({ params }: { params: { id: number } }) => {
           setBigLessons(start.data);
           localStorage.setItem("lessons", JSON.stringify(start.data, null, 2));
           setActiveBigLesson(start.data[0]);
-
+          setCurrentIndex(0)
           toast.dismiss();
-  
           toast.success("Lessons loaded");
           toast.info("Select a lesson to begin")
         } catch (error: any) {
@@ -177,26 +182,30 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         setIsTakingQuiz(false);
       }
     } else if(currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
       if(isWatchingVideo){
         setIsWatchingVideo(false)
+      }else{
+        setCurrentIndex(currentIndex - 1);
       }
     }
     // setActiveLesson(activeBigLesson.lessons[currentIndex-1])
   };
   const goToNext = () => {
+    
     if(currentIndex===activeBigLesson!.lessons.length-1){
+      updateProgress(10);
 
-      updateProgress();
       if (
         activeBigLesson &&
         bigLessons.indexOf(activeBigLesson) < bigLessons.length - 1
       ) {
+        if(isWatchingVideo){
+          setIsWatchingVideo(false)
+        }
+        setActiveBigLesson( bigLessons[bigLessons.indexOf(activeBigLesson)+1])
         if(!quizCompleted){
           setCurrentIndex(0)
         }
-        setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson) + 1])
-        setIsWatchingVideo(false)
       }else {
         setIsTakingQuiz(true)
       }
@@ -208,6 +217,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
 
   const watchVideo = () => {
     setIsWatchingVideo(true);
+    setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson!) + 1])
   };
 
   const takeQuiz = () => {
@@ -330,7 +340,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
           <div className="m-0 min-w-full min-h-full bg-white">
 
           <video className=" object-cover w-full h-full " autoPlay loop controls>
-          <source src={activeBigLesson.video || "https://drive.google.com/uc?id=1IAYD5J-VIXwAslaGQgt4ClVWoilegMm8/"} type="video/mp4"/>
+          <source src={videoLinks[bigLessons.indexOf(activeBigLesson)]} type="video/mp4"/>
 Your browser does not support the video tag.
 </video>
           </div>
@@ -359,7 +369,7 @@ Your browser does not support the video tag.
                       src={activeLesson?.images[0].avatar}
                       height={4000}
                       width={4000}
-                      style={{objectFit:"fill"}}
+                      style={{objectFit:"cover"}}
                       alt="lesson image"
                       className="w-full h-full"
                     />
@@ -407,11 +417,11 @@ Your browser does not support the video tag.
               </Button>)
               
             ):(
-              quizzes && !quizCompleted  && currentIndex===activeBigLesson?.lessons.length-1 ?(!isTakingQuiz ?
+              quizzes.length >0 && !quizCompleted  && currentIndex===activeBigLesson?.lessons.length-1 ?(!isTakingQuiz ?
                 (<Button onClick={takeQuiz}>Take Quiz</Button>):(                  <Button disabled={!selectedOption} onClick={checkQuizAnswer}>
                 Check Answer
               </Button>)
-              ):(                currentIndex!==activeBigLesson.lessons.length-1?(<Button onClick={goToNext} disabled={isTakingQuiz}>
+              ):(    currentIndex !== activeBigLesson.lessons.length-1 && activeBigLesson!==bigLessons[bigLessons.length-1]?(<Button onClick={goToNext} disabled={isTakingQuiz}>
                 Next
               </Button>):              <Link
                 href={"https://robolabssimulation.vercel.app/"}
