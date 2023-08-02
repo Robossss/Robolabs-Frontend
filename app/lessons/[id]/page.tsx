@@ -178,7 +178,23 @@ const Lesson = ({ params }: { params: { id: number } }) => {
     // setActiveLesson(activeBigLesson.lessons[currentIndex-1])
   };
   const goToNext = () => {
-    setCurrentIndex(currentIndex + 1);
+    if(currentIndex===activeBigLesson!.lessons.length-1){
+      updateProgress();
+      if (
+        activeBigLesson &&
+        bigLessons.indexOf(activeBigLesson) < bigLessons.length - 1
+      ) {
+        if(!quizCompleted){
+          setCurrentIndex(0)
+        }
+        setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson) + 1]);
+        setIsWatchingVideo(false)
+      }else {
+        setIsTakingQuiz(true)
+      }
+    } else{
+      setCurrentIndex(currentIndex + 1);
+    }
     // setActiveLesson(activeBigLesson.lessons[currentIndex+1])
   };
 
@@ -200,6 +216,7 @@ const Lesson = ({ params }: { params: { id: number } }) => {
         activeBigLesson &&
         bigLessons.indexOf(activeBigLesson) + 1 < bigLessons.length - 1
       ) {
+        
         setActiveBigLesson(bigLessons[bigLessons.indexOf(activeBigLesson) + 1]);
       }
       setIsTakingQuiz(false);
@@ -234,9 +251,14 @@ const Lesson = ({ params }: { params: { id: number } }) => {
   };
 
   const simulate = ()=> {
-    setCurrentIndex(0)
-    setIsTakingQuiz(false)
-    setQuizCompleted(false)
+    updateProgress()
+    toast.success("Lessons Completed")
+    localStorage.removeItem("module-data")
+    router.push('/lessons')
+
+    // setCurrentIndex(0)
+    // setIsTakingQuiz(false)
+    // setQuizCompleted(false)
   }
 
   const Option = ({ option }: { option: string }) => {
@@ -360,51 +382,35 @@ Your browser does not support the video tag.
           )}
         </div>
         <div className="">
-          {activeBigLesson &&
-            (currentIndex !== activeBigLesson.lessons.length - 1 &&
-            !quizCompleted ? (
+          {
+            activeBigLesson && ((bigLessons.indexOf(activeBigLesson)!== bigLessons.length-1)?(
+              currentIndex!==activeBigLesson.lessons.length-1?(<Button onClick={goToNext} disabled={isTakingQuiz}>
+                Next
+              </Button>):(activeBigLesson.video && !isWatchingVideo?(                <Button onClick={watchVideo} disabled={isTakingQuiz}>
+                Watch Video
+              </Button>):
               <Button onClick={goToNext} disabled={isTakingQuiz}>
                 Next
-              </Button>
-            ) : currentIndex === activeBigLesson.lessons.length - 1 ? (
-              activeBigLesson?.video && !isWatchingVideo? (
-                <Button onClick={watchVideo} disabled={isTakingQuiz}>
-                  Watch Video
-                </Button>
-              ) : quizzes ? (
-                !isTakingQuiz ? (
-                  <Button onClick={takeQuiz}>Take Quiz</Button>
-                ) : selectedOption ? (
-                  <Button disabled={Boolean(answer)} onClick={checkQuizAnswer}>
-                    Check Answer
-                  </Button>
-                ) : (
-                  <Button
-                    disabled={Boolean(!answer)}
-                    onClick={goToNextQuestion}
-                  >
-                    Next Question
-                  </Button>
-                )
-              ) : (
-                //  if there are no quizes
-                <Link
-                  href={"https://robolabssimulation.vercel.app/"}
-                  onClick={() => localStorage.removeItem("module-data")}
-                >
-                  <Button>Go To Simulation</Button>
-                </Link>
-              )
-            ) : (
-              // if lesson not ended
-              <Link
-              href={"https://robolabssimulation.vercel.app/"} target="_blank"
-              onClick={() => localStorage.removeItem("module-data")}
-            >
-              <Button onClick={simulate}>Go To Simulation</Button>
-            </Link>
-            ))}
-
+              </Button>)
+              
+            ):(
+              quizzes && !quizCompleted  && currentIndex===activeBigLesson?.lessons.length-1 ?(!isTakingQuiz ?
+                (<Button onClick={takeQuiz}>Take Quiz</Button>):(                  <Button disabled={!selectedOption} onClick={checkQuizAnswer}>
+                Check Answer
+              </Button>)
+              ):(                currentIndex!==activeBigLesson.lessons.length-1?(<Button onClick={goToNext} disabled={isTakingQuiz}>
+                Next
+              </Button>):              <Link
+                href={"https://robolabssimulation.vercel.app/"}
+                target="_blank"
+                onClick={simulate}
+              >
+                <Button>Go To Simulation</Button>
+              </Link>)
+                
+              
+            ))
+          }
         </div>
       </div>
     );
@@ -462,7 +468,7 @@ Your browser does not support the video tag.
             <LessonContent />
             <LessonButtons />
           </main>
-          {/* <pre>{JSON.stringify(data,null,2)}</pre> */}
+          {/* <pre>{JSON.stringify(activeBigLesson,null,2)}</pre> */}
           {/* <pre>{JSON.stringify(quizzes, null, 2)}</pre> */}
         </section>
       </main>
